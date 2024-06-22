@@ -73,7 +73,7 @@ func (client *DBClient) QueryDBSimplePlayers(query string, params []interface{},
 	}
 	defer rows.Close()
 
-	results := []model.SimplePlayer{}
+	var results []model.SimplePlayer
 	for rows.Next() {
 		result, rowParseError := rowHandler(rows)
 		if rowParseError != nil {
