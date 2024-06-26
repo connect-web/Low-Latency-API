@@ -1,0 +1,48 @@
+html{
+    font-family: runescape, 'sans-serif';
+    background: #090a11;
+    color: white;
+}
+
+
+
+
+
+h1, h2, h3, h4, h5, h6{
+    color: #008CFF!important;
+}
+
+.navbar-brand{
+    color: #008CFF;
+}
+
+
+
+.nav-item a{
+    transition: color 0.5s linear;
+}
+
+.nav-item a:hover{
+    color: #008CFF;!important;
+}
+
+
+
+.customButton{
+    background: transparent;
+    border: 2px solid grey;
+    border-radius: 32px;
+    margin: 1em;
+}
+
+.customButton img{
+    width: 32px;
+    height: 32px;
+    padding: 0.5em;
+}
+
+
+.active{
+    border-color: #008CFF;
+}
+
