@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	skillsMap = map[string]struct{}{
+	SkillsMap = map[string]struct{}{
 		"attack":       {},
 		"defence":      {},
 		"strength":     {},
@@ -50,7 +50,7 @@ func ValidateSkills(skills []string) (validSkills []string) {
 		}
 
 		// validate skill from pre-defined map
-		_, valid := skillsMap[skill_lower]
+		_, valid := SkillsMap[skill_lower]
 		if valid {
 			validSkills = append(validSkills, Title.String(skill_lower))
 			repeatPrevention[skill_lower] = struct{}{}
