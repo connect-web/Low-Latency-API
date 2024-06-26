@@ -1,0 +1,339 @@
+
+/*
+Search section
+ */
+.searchArea {
+    width: 100%;
+}
+
+.search-container {
+    margin: auto;
+    margin-top: 2em;
+    max-width: 80%;
+    display: flex;
+    background-color: #3D3D3D; /* Dark grey background */
+    border-radius: 20px; /* Rounded corners */
+    overflow: hidden; /* Ensures the inner elements don't spill out of the border radius */
+}
+
+#searchInput {
+    flex-grow: 1; /* Takes available space */
+    background-color: #3D3D3D; /* Same as container for seamless look */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 1.5em; /* Adjusted for better scaling */
+    outline: none; /* Remove focus outline */
+}
+
+#searchButton {
+    background-color: #238AE6; /* Blue background */
+    border: none;
+    color: white;
+    padding: 0.5em 1em; /* Adjusted padding */
+    cursor: pointer;
+    outline: none; /* Remove focus outline */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 50px; /* Minimum width to ensure visibility */
+    flex-shrink: 0; /* Prevents shrinking below min-width */
+}
+#searchButton {
+    background-color: #238AE6; /* Blue background */
+    border: none;
+    color: white;
+    padding: 1em;
+    cursor: pointer;
+    outline: none; /* Remove focus outline */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 20%;
+}
+
+#searchButton i {
+    font-size: 2em;
+}
+
+/* Adjustments for the search button hover effect */
+#searchButton:hover {
+    background-color: #1a6fb3; /* A darker shade of the button color */
+}
+
+/* Placeholder text color adjustments */
+#searchInput::placeholder {
+    color: rgba(255, 255, 255, 0.75); /* Light white for placeholder text */
+}
+
+/* Media Queries for responsiveness */
+@media (max-width: 600px) {
+    #searchInput {
+        font-size: 1em; /* Smaller font size on small screens */
+    }
+    #searchButton {
+        padding: 0.5em; /* Smaller padding */
+        min-width: 40px; /* Slightly smaller button on very small screens */
+    }
+}
+
+.active-search-filter{
+    color: #008CFF!important;
+}
+
+
+
+
+.searchFilter .card-body{
+    cursor: pointer;
+}
+
+.searchFilter .card{
+    background-color: rgba(0, 140, 255, 0.1);
+    color: white;
+
+    border-radius: 1em;
+}
+
+
+/*
+skill images
+ */
+
+
+.skill{
+    border: 2px solid transparent;
+    border-radius: 10px;
+    transition: border 0.5s linear;
+    padding: 0.25em;
+}
+
+.skill:hover{
+    border-color: #fcfdff;
+}
+.active-skill{
+    border-color: #008CFF;
+}
+
+#imageGrid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between; /* Adjusts spacing between items */
+    align-items: flex-start; /* Align items at the start of the container */
+}
+.skillContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 16px; /* Space between each skill container */
+}
+.control-container {
+    display: flex;
+    justify-content: space-around;
+    width: 100%; /* Full width for better touch targets */
+    margin: 10px 0; /* Margin around controls */
+}
+.img-fluid {
+    max-width: 100%;
+    height: auto;
+}
+.textInput {
+    max-width: 50%; /* Full width of the parent */
+
+}
+
+
+.fa-selectable{
+    cursor: pointer; /* Indicates that icons are clickable */
+    user-select: none; /* Prevent text selection */
+}
+.fa-selected-plus{
+    color: rgba(66, 252, 2, 0.46) !important;
+}
+.fa-selected-minus{
+    color: rgba(255, 0, 0, 0.47) !important;
+}
+
+
+@media (min-width: 576px) { /* Small devices (landscape phones, 576px and up) */
+    .skillContainer {
+        flex: 1 1 150px; /* Adjust this value to change items per row */
+    }
+}
+@media (min-width: 768px) { /* Medium devices (tablets, 768px and up) */
+    .skillContainer {
+        flex: 1 1 200px;
+    }
+}
+@media (min-width: 992px) { /* Large devices (desktops, 992px and up) */
+    .skillContainer {
+        flex: 1 1 250px;
+    }
+}
+
+
+/*
+Skill container text inputs
+ */
+.skillContainer {
+    width: 100px;           /* Fixed width */
+    height: 120px;          /* Fixed height */
+    display: flex;          /* Enables flexbox */
+    flex-direction: column; /* Stack items vertically */
+    align-items: center;    /* Center items horizontally */
+    justify-content: center; /* Center items vertically */
+    overflow: hidden;       /* Hide parts of the image that exceed the container dimensions */
+    margin-bottom: 10px;    /* Optional: adds space below each container */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 2em;
+    margin: 0.25em;
+    background: rgba(61, 61, 61, 0.2);
+}
+
+.skillContainer img {
+    max-width: 100%;    /* Limit the width to the container’s width */
+    max-height: 80%;    /* Adjust the max height to give space for the input */
+    object-fit: contain; /* Ensure the entire image is always visible and maintain aspect ratio */
+}
+
+.skillContainer .textInput {
+    text-align: center;
+    width: 100%;        /* Ensure the input occupies the full width of the container */
+    border: 1px solid transparent; /* Style the border of the input (optional) */
+    padding: 5px;       /* Add some padding inside the input for better text visibility */
+    box-sizing: border-box; /* Include padding and border in the input's width */
+    margin: auto;
+    margin-bottom: 1em;
+    border-radius: 2em;
+    background-color: rgba(0, 140, 255, 0.1);
+    color: white;
+
+}
+
+
+.textInput:focus{
+    border-color:  #008CFF;
+    outline: none;
+}
+
+
+
+/*
+Table
+ */
+
+
+
+.skill-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+.skillTable {
+    display: flex;
+    align-items: center;
+    margin-right: 10px; /* Spacing between each skill */
+}
+.skillTable img {
+    width: 20px; /* Adjust size as needed */
+    height: 20px; /* Adjust size as needed */
+    margin-right: 4px;
+}
+.skillTable p {
+    margin-bottom: 0;
+}
+
+.table > thead > tr > th,
+.table > tbody > tr > td {
+    text-align: center; /* Center align text */
+}
+.table {
+    font-family: runescape, 'sans-serif';
+    width: 100%; /* Ensure the table uses full width */
+    table-layout: fixed; /* Fixed layout to evenly distribute column width */
+}
+
+
+/*
+search button
+ */
+
+
+
+
+#tableBody tr td{
+    padding: 1em;
+    margin: auto;
+}
+
+
+.button-findUsers {
+    background-color: initial;
+    background-image: linear-gradient(-180deg, #00D775, #00BD68);
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
+    color: #FFFFFF;
+    cursor: pointer;
+    display: inline-block;
+    font-family: Inter,-apple-system,system-ui,Roboto,"Helvetica Neue",Arial,sans-serif;
+    height: 44px;
+    line-height: 44px;
+    outline: 0;
+    overflow: hidden;
+    padding: 0 20px;
+    pointer-events: auto;
+    position: relative;
+    text-align: center;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    vertical-align: top;
+    white-space: nowrap;
+    width: 100%;
+    z-index: 9;
+    border: 0;
+}
+
+.button-findUsers:hover {
+    background: #00bd68;
+}
+
+.button-filter-toggle {
+    background-color: initial;
+    background-image: linear-gradient(-180deg, #008cd7, #006ebd);
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
+    color: #FFFFFF;
+    cursor: pointer;
+    display: inline-block;
+    font-family: Inter,-apple-system,system-ui,Roboto,"Helvetica Neue",Arial,sans-serif;
+    height: 44px;
+    line-height: 44px;
+    outline: 0;
+    overflow: hidden;
+    padding: 0 20px;
+    pointer-events: auto;
+    position: relative;
+    text-align: center;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    vertical-align: top;
+    white-space: nowrap;
+    width: 100%;
+    z-index: 9;
+    border: 0;
+}
+
+.button-filter-toggle:hover {
+    background: #0d7eff;
+}
+
+.hidden{
+    display: none;
+}
+
+.filterTable{
+    margin-top: 2em
+}
