@@ -84,3 +84,25 @@ func (client *DBClient) QueryDBSimplePlayers(query string, params []interface{},
 	}
 	return results, nil
 }
+
+// QueryDB executes a query with custom row handling logic.
+func (client *DBClient) QueryDBPlayers(query string, params []interface{}, rowHandler func(*sql.Rows) (model.Player, error)) ([]model.Player, error) {
+	fmt.Println("Sending Query")
+	rows, queryErr := client.DB.Query(query, params...)
+	if queryErr != nil {
+		log.Println("Error executing query:", queryErr.Error())
+		return nil, queryErr
+	}
+	defer rows.Close()
+
+	var results []model.Player
+	for rows.Next() {
+		result, rowParseError := rowHandler(rows)
+		if rowParseError != nil {
+			log.Println("Error handling row:", rowParseError.Error())
+			continue // or return, depending on how critical an error in one row is
+		}
+		results = append(results, result)
+	}
+	return results, nil
+}
