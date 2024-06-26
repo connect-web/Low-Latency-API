@@ -5,6 +5,8 @@ import (
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/compress"
 	"log"
+	"os"
+	"time"
 )
 
 func main() {
@@ -16,8 +18,27 @@ func main() {
 	}))
 
 	// Define a route for the GET method on the root path '/'
-	app.Get("/ratio", api.GetPlayersByRatioHandler)
+	//app.Get("/api/ratio", api.GetPlayersByRatioHandler)
+	//app.Get("/api/experience", api.GetPlayersByExperienceHandler)
+	//app.Get("/api/levels", api.GetPlayersByLevelHandler)
 
-	// Start the server on port 3000
-	log.Fatal(app.Listen(":4050"))
+	//app.Get("/api/users", api.GetSimplePlayerFromName)
+	app.Get("/api/find-bots", api.GetPlayerFromSkills)
+
+	app.Static("/", "../../site/", fiber.Static{
+		CacheDuration: 10 * time.Minute,
+		Compress:      true,
+		Index:         "home.html",
+	})
+
+	//
+	envVar := os.Getenv("siteonline")
+	certDirectory := os.Getenv("certDir")
+
+	if envVar == "site" {
+		log.Fatal(app.Listen(":443", fiber.ListenConfig{CertFile: certDirectory + "fullchain.pem", CertKeyFile: certDirectory + "privkey.pem"}))
+	} else {
+		log.Fatal(app.Listen(":4050"))
+	}
+
 }
