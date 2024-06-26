@@ -26,12 +26,11 @@ func main() {
 	app.Get("/api/find-bots", api.GetPlayerFromSkills)
 
 	app.Static("/", "../../site/", fiber.Static{
-		CacheDuration: 10 * time.Minute,
+		CacheDuration: 30 * time.Minute,
 		Compress:      true,
 		Index:         "home.html",
 	})
 
-	//
 	envVar := os.Getenv("siteonline")
 	certDirectory := os.Getenv("certDir")
 
