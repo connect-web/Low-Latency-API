@@ -1,0 +1,54 @@
+
+.thirdTick {
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+    outline: none !important;
+}
+.thirdTick.ticked .tick-box {
+    background: #33c700;
+    border: solid 1px #33c700;
+}
+.thirdTick.ticked .tick-mark {
+    animation: tick-animate-in 0.4s 0.2s forwards;
+}
+.thirdTick .tick-box {
+    width: calc(100% - 2px);
+    height: calc(100% - 2px);
+    background: white;
+    border: solid 1px #BFC0C1;
+    border-radius: 4px;
+    position: relative;
+    transition: 0.3s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.thirdTick .tick-mark {
+    width: 25px;
+    height: 25px;
+    display: block;
+    stroke-width: 6;
+    stroke: white;
+    stroke-dasharray: 34;
+    stroke-dashoffset: 34;
+    animation: tick-animate-out 0.4s forwards;
+    transition: 0.4s;
+}
+
+@keyframes tick-animate-in {
+    from {
+        stroke-dashoffset: 34;
+    }
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+@keyframes tick-animate-out {
+    from {
+        stroke-dashoffset: 0;
+    }
+    to {
+        stroke-dashoffset: 34;
+    }
+}
