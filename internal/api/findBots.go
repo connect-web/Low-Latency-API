@@ -42,6 +42,12 @@ func GetPlayerFromSkills(c fiber.Ctx) error {
 	return c.JSON(players)
 }
 
+var levelRange = []int{1, 126}
+
+func validLevel(level int) bool {
+	return levelRange[0] <= level && level <= levelRange[1]
+}
+
 func extractBotFilterParams(c fiber.Ctx) (map[string]struct{}, map[string]int, map[string]int, map[string]int, error) {
 	queryParams := c.Context().QueryArgs()
 
@@ -50,8 +56,6 @@ func extractBotFilterParams(c fiber.Ctx) (map[string]struct{}, map[string]int, m
 	dailyXpThresholds := map[string]int{}
 	minLevels := map[string]int{}
 	maxLevels := map[string]int{}
-
-	fmt.Println(util.SkillsMap)
 
 	// Iterate over all query parameters
 	queryParams.VisitAll(func(key, value []byte) {
@@ -82,7 +86,10 @@ func extractBotFilterParams(c fiber.Ctx) (map[string]struct{}, map[string]int, m
 			if exists {
 				number, err := strconv.Atoi(string(value))
 				if err == nil {
-					minLevels[util.Title.String(skillName)] = number
+					if validLevel(number) {
+						minLevels[util.Title.String(skillName)] = number
+					}
+
 				}
 			}
 		}
@@ -92,7 +99,10 @@ func extractBotFilterParams(c fiber.Ctx) (map[string]struct{}, map[string]int, m
 			if exists {
 				number, err := strconv.Atoi(string(value))
 				if err == nil {
-					maxLevels[util.Title.String(skillName)] = number
+					if validLevel(number) {
+						maxLevels[util.Title.String(skillName)] = number
+					}
+
 				}
 			}
 		}
