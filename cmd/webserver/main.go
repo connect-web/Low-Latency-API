@@ -4,6 +4,7 @@ import (
 	"github.com/connect-web/Low-Latency-API/internal/api"
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/compress"
+	"github.com/gofiber/fiber/v3/middleware/limiter"
 	"log"
 	"os"
 	"time"
@@ -17,12 +18,28 @@ func main() {
 		Level: compress.LevelBestSpeed, // or compress.LevelBestCompression
 	}))
 
+	app.Use(limiter.New(limiter.Config{
+		Next: func(c fiber.Ctx) bool {
+			return c.IP() == "127.0.0.1"
+		},
+		Max:        20,
+		Expiration: 30 * time.Second,
+		KeyGenerator: func(c fiber.Ctx) string {
+			return c.Get("x-forwarded-for")
+		},
+		LimitReached: func(c fiber.Ctx) error {
+			c.Status(fiber.StatusTooManyRequests)
+			return c.JSON(fiber.Map{"Error": "Rate limited try again later."})
+		},
+	}))
+
 	// Define a route for the GET method on the root path '/'
 	//app.Get("/api/ratio", api.GetPlayersByRatioHandler)
 	//app.Get("/api/experience", api.GetPlayersByExperienceHandler)
 	//app.Get("/api/levels", api.GetPlayersByLevelHandler)
 
 	//app.Get("/api/users", api.GetSimplePlayerFromName)
+
 	app.Get("/api/find-bots", api.GetPlayerFromSkills)
 
 	app.Static("/", "../../site/", fiber.Static{
