@@ -109,7 +109,7 @@ activities = {
 import re
 
 
-def filter_string(input):
+def filterFileName(input):
     # Use regex to replace all non a-zA-Z characters, but keep spaces
     output = re.sub(r'[^a-zA-Z\s]', '', input)
     output = output.lower()
@@ -125,7 +125,7 @@ for file in os.listdir('bosses'):
 
 
 for boss in bosses:
-    filtered_name = filter_string(boss)
+    filtered_name = filterFileName(boss)
 
     if filtered_name not in file_names:
         if boss in activities:
