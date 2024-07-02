@@ -170,7 +170,7 @@ func getXpThresholdCondition(skill string, experience int, paramIndexInput int) 
 	return paramIndexInput + 2, conditionQuery, params
 }
 
-func BuildBotFinderQuery(selectedSkills map[string]struct{}, dailyXpThresholds, minLevels, maxLevels map[string]int) (string, []interface{}) {
+func BuildSkillBotFinderQuery(selectedSkills map[string]struct{}, dailyXpThresholds, minLevels, maxLevels map[string]int) (string, []interface{}) {
 	query := `
 	select
 		p.name,
@@ -227,6 +227,87 @@ func BuildBotFinderQuery(selectedSkills map[string]struct{}, dailyXpThresholds, 
 			params = append(params, newParams...)
 		}
 
+	}
+
+	query = fmt.Sprintf(query, conditions)
+
+	return query, params
+}
+
+func getMinigameCondition(minigame string, score int, paramIndexInput int) (paramIndex int, conditionQuery string, params []interface{}) {
+	params = []interface{}{
+		score, minigame,
+	}
+	conditionQuery = fmt.Sprintf(" and $%d <= COALESCE(NULLIF((gains.minigames->>$%d)::numeric, 'NaN'), 0)", paramIndexInput, paramIndexInput+1)
+	return paramIndexInput + 2, conditionQuery, params
+}
+
+func BuildMinigameBotFinderQuery(selectedSkills map[string]struct{}, minigameThresholds, dailyXpThresholds, minLevels, maxLevels map[string]int) (string, []interface{}) {
+	query := `
+	select
+		p.name,
+		pl.skills_levels,
+		pl.minigames,
+		gains.skills_experience as daily_experience_gains,
+		gains.minigames as daily_minigame_gains
+	
+	from stats.minigame_links pn
+	LEFT JOIN PLAYERS P ON P.ID = pn.PLAYERID
+	LEFT JOIN player_live PL on PL.playerid = P.id
+	LEFT JOIN player_gains gains on gains.playerid = P.id
+	
+	where
+		1=1
+		%s
+	
+	ORDER BY pn.links desc
+	LIMIT 100;
+	`
+
+	params := []interface{}{}
+	var conditions string
+	paramIndex := 1
+
+	for skill := range selectedSkills {
+		xpThreshold, validXpThreshold := dailyXpThresholds[skill]
+		minLevel, validminLevels := minLevels[skill]
+		maxLevel, validmaxLevels := maxLevels[skill]
+
+		if validXpThreshold {
+			var conditionQuery string
+			var newParams []interface{}
+
+			paramIndex, conditionQuery, newParams = getXpThresholdCondition(skill, xpThreshold, paramIndex)
+			conditions += conditionQuery
+			params = append(params, newParams...)
+		}
+
+		if validminLevels {
+			var conditionQuery string
+			var newParams []interface{}
+
+			paramIndex, conditionQuery, newParams = getMinCondition(skill, minLevel, paramIndex)
+			conditions += conditionQuery
+			params = append(params, newParams...)
+		}
+
+		if validmaxLevels {
+			var conditionQuery string
+			var newParams []interface{}
+
+			paramIndex, conditionQuery, newParams = getMaxCondition(skill, maxLevel, paramIndex)
+			conditions += conditionQuery
+			params = append(params, newParams...)
+		}
+	}
+
+	for minigame, score := range minigameThresholds {
+		var conditionQuery string
+		var newParams []interface{}
+
+		paramIndex, conditionQuery, newParams = getMinigameCondition(minigame, score, paramIndex)
+		conditions += conditionQuery
+		params = append(params, newParams...)
 	}
 
 	query = fmt.Sprintf(query, conditions)
