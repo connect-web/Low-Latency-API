@@ -28,9 +28,9 @@ func GetPlayerFromSkills(c fiber.Ctx) error {
 		}
 	}()
 
-	query, params := db.BuildBotFinderQuery(selectedSkills, dailyXpThresholds, minLevels, maxLevels)
+	query, params := db.BuildSkillBotFinderQuery(selectedSkills, dailyXpThresholds, minLevels, maxLevels)
 
-	players, err := client.QueryDBPlayers(query, params, db.HandlePlayerRow)
+	players, err := client.QueryDBPlayers(query, params, db.HandlePlayerSkillsRow)
 	if err != nil {
 		return util.InternalServerError(c)
 	}

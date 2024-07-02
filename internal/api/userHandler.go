@@ -31,7 +31,7 @@ func GetSimplePlayerFromName(c fiber.Ctx) error {
 	fmt.Println(query)
 	fmt.Println(params)
 
-	players, err := client.QueryDBPlayers(query, util.ConvertStringArrayToInterfaceArray(params), db.HandlePlayerRow)
+	players, err := client.QueryDBPlayers(query, util.ConvertStringArrayToInterfaceArray(params), db.HandlePlayerSkillsRow)
 	if err != nil {
 		return util.InternalServerError(c)
 	}
