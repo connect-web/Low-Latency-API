@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        fetch(`/api/find-bots?${params.toString()}`)
+        fetch(`/api/find-skill-bots?${params.toString()}`)
             .then(response => response.json())
             .then(data => tableFiller(data))
             .catch(error => console.error('Error:', error));
