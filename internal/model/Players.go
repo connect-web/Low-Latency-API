@@ -14,12 +14,12 @@ type SimplePlayer struct {
 
 type Player struct {
 	Username      string
-	SkillGains    map[string]int
-	MinigameGains map[string]int
+	SkillGains    map[string]float64 // these are daily stats so float is required.
+	MinigameGains map[string]float64
 
 	Skills          map[string]int // Skill : Experience directly from Hiscores
 	SkillLevels     map[string]int
-	SkillRatios     map[string]float32 // 32 bits will have enough useful data
+	SkillRatios     map[string]float64 // 32 bits will have enough useful data
 	Minigames       map[string]int
 	CombatLevel     int
 	TotalLevel      int
