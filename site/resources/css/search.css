@@ -137,6 +137,14 @@ skill images
     max-width: 100%;
     height: auto;
 }
+
+.img-fluid-hiscores {
+    width: 36px;
+    height: auto;
+}
+
+
+
 .textInput {
     max-width: 50%; /* Full width of the parent */
 
@@ -329,6 +337,8 @@ search button
 .button-filter-toggle:hover {
     background: #0d7eff;
 }
+
+
 
 .hidden{
     display: none;

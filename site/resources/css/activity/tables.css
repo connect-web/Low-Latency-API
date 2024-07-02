@@ -1,0 +1,21 @@
+.text-input {
+    border: none;
+    background-color: transparent;
+    width: 100%;
+    text-align: center;
+    color: white;
+}
+#skillsTable{
+    background: #3D3D3D;
+}
+.filterTable{
+    background: black;
+}
+
+tr{
+    height: 25px;
+}
+
+#minigameHiscores > table:nth-child(1){
+    border-radius: 5em;
+}
