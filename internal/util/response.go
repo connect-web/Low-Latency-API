@@ -25,3 +25,9 @@ func InvalidCredentials(c fiber.Ctx) error {
 		"error": "Invalid credentials",
 	})
 }
+
+func Unauthorized(c fiber.Ctx) error {
+	return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+		"error": "Unauthorized",
+	})
+}
