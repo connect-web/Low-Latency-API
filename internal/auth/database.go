@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/connect-web/Low-Latency-API/internal/db"
 	"log"
-	"strings"
 )
 
 func usernameExists(username string) (exists bool, error bool) {
@@ -31,6 +30,7 @@ func usernameExists(username string) (exists bool, error bool) {
 	var databaseUsername string
 	err := row.Scan(&databaseUsername)
 	if err != nil {
+		fmt.Println(err.Error())
 		if err == sql.ErrNoRows {
 			fmt.Println("Username does not exist")
 			return false, false
@@ -40,9 +40,11 @@ func usernameExists(username string) (exists bool, error bool) {
 		return false, true
 	}
 
-	exists = strings.ToLower(databaseUsername) == strings.ToLower(username)
+	fmt.Println(databaseUsername)
+
+	exists = databaseUsername != ""
 	fmt.Printf("exists: %v\n", exists)
-	return exists, err == nil
+	return exists, err != nil
 }
 
 func RegisterUserDatabase(username string, password []byte) (valid bool) {
