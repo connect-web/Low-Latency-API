@@ -4,13 +4,14 @@ go 1.22.0
 
 require (
 	github.com/gofiber/fiber/v3 v3.0.0-beta.2
+	github.com/gofiber/utils/v2 v2.0.0-beta.4
 	github.com/lib/pq v1.10.9
+	golang.org/x/crypto v0.24.0
 	golang.org/x/text v0.16.0
 )
 
 require (
 	github.com/andybalholm/brotli v1.1.0 // indirect
-	github.com/gofiber/utils/v2 v2.0.0-beta.4 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/klauspost/compress v1.17.9 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
