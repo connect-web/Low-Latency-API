@@ -1,55 +1,69 @@
 package main
 
 import (
+	"fmt"
 	"github.com/connect-web/Low-Latency-API/internal/api"
+	"github.com/connect-web/Low-Latency-API/internal/auth"
+	"github.com/connect-web/Low-Latency-API/internal/middleware"
 	"github.com/gofiber/fiber/v3"
-	"github.com/gofiber/fiber/v3/middleware/compress"
-	"github.com/gofiber/fiber/v3/middleware/limiter"
 	"log"
 	"os"
-	"strings"
 	"time"
 )
 
+var (
+	envVar        = os.Getenv("siteonline")
+	certDirectory = os.Getenv("certDir")
+	front_end     = envVar == "site" // True if front_end , False if local development
+)
+
 func main() {
+	fmt.Printf("Front end mode = %v\n", front_end)
 	// Initialize a new Fiber app
 	app := fiber.New()
+	// Use middlewares for each route
+	// app.Use(helmet.New(), )
 
-	app.Use(compress.New(compress.Config{
-		Level: compress.LevelBestSpeed, // or compress.LevelBestCompression
-	}))
+	middleware.Run(app)
 
-	app.Use(limiter.New(limiter.Config{
-		Next: func(c fiber.Ctx) bool {
-			return c.IP() == "127.0.0.1" || !strings.Contains(c.Path(), "api")
-		},
-		Max:        5,
-		Expiration: 30 * time.Second,
-		KeyGenerator: func(c fiber.Ctx) string {
-			return c.Get("x-forwarded-for")
-		},
-		LimitReached: func(c fiber.Ctx) error {
-			c.Status(fiber.StatusTooManyRequests)
-			return c.JSON(fiber.Map{"Error": "Rate limited try again later."})
-		},
-	}))
+	API(app)
+	StaticFiles(app)
 
-	// Define a route for the GET method on the root path '/'
-	//app.Get("/api/ratio", api.GetPlayersByRatioHandler)
-	//app.Get("/api/experience", api.GetPlayersByExperienceHandler)
-	//app.Get("/api/levels", api.GetPlayersByLevelHandler)
+	auth.Main(app)
+	//auth.UnauthenticatedSessionSetup(app)
 
-	//app.Get("/api/users", api.GetSimplePlayerFromName)
+	run(app)
 
+}
+
+func run(app *fiber.App) {
+	if front_end {
+		log.Fatal(app.Listen(":443", fiber.ListenConfig{CertFile: certDirectory + "fullchain.pem", CertKeyFile: certDirectory + "privkey.pem"}))
+	} else {
+		log.Fatal(app.Listen(":4050"))
+	}
+}
+
+func API(app *fiber.App) {
 	app.Get("/api/find-skill-bots", api.GetPlayerFromSkills)
 	app.Get("/api/find-minigame-bots", api.GetPlayerFromMinigames)
 	app.Get("/api/minigame-bots-hiscore", api.PlayerMinigameHiscores)
 	app.Get("/api/minigame-bots-listing", api.PlayerMinigameListing)
 
-	app.Static("/", "../../site/", fiber.Static{
-		// CacheDuration: 30 * time.Minute,
-		// Compress: true,
-		Index: "home.html",
-	})
+	// Define a route for the GET method on the root path '/'
+	//app.Get("/api/ratio", api.GetPlayersByRatioHandler)
+	//app.Get("/api/experience", api.GetPlayersByExperienceHandler)
+	//app.Get("/api/levels", api.GetPlayersByLevelHandler)
+	//app.Get("/api/users", api.GetSimplePlayerFromName)
+}
 
+func StaticFiles(app *fiber.App) {
+	staticType := fiber.Static{
+		Index: "home",
+	}
+	if front_end {
+		staticType.CacheDuration = 30 * time.Minute
+		staticType.Compress = true
+	}
+	app.Static("/", "../../site/")
 }
