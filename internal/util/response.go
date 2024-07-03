@@ -4,18 +4,24 @@ import "github.com/gofiber/fiber/v3"
 
 func ErrorResponse(c fiber.Ctx, message string) error {
 	return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-		"Error": message,
+		"error": message,
 	})
 }
 
 func NoPlayersFound(c fiber.Ctx) error {
 	return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-		"Error": "No players found",
+		"error": "No players found",
 	})
 }
 
 func InternalServerError(c fiber.Ctx) error {
 	return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-		"Error": "Internal server error",
+		"error": "Internal server error",
+	})
+}
+
+func InvalidCredentials(c fiber.Ctx) error {
+	return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+		"error": "Invalid credentials",
 	})
 }
