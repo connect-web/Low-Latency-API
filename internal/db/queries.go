@@ -178,7 +178,7 @@ func BuildSkillBotFinderQuery(selectedSkills map[string]struct{}, dailyXpThresho
 		pl.minigames,
 		gains.skills_experience as daily_experience_gains
 	
-	from stats.pearson pn
+	from stats.skill_links pn
 	LEFT JOIN PLAYERS P ON P.ID = pn.PLAYERID
 	LEFT JOIN player_live PL on PL.playerid = P.id
 	LEFT JOIN player_gains gains on gains.playerid = P.id
