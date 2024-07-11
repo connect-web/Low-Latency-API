@@ -6,6 +6,7 @@ import (
 	"github.com/connect-web/Low-Latency-API/internal/middleware"
 	"github.com/connect-web/Low-Latency-API/internal/protectedApis"
 	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/template/html/v2"
 	"log"
 	"os"
 	"time"
@@ -20,10 +21,14 @@ var (
 func main() {
 	fmt.Printf("Front end mode = %v\n", front_end)
 	// Initialize a new Fiber app
-	app := fiber.New()
-	// Use middlewares for each route
+	engine := html.New("../../templates", ".html")
+
+	app := fiber.New(fiber.Config{
+		Views: engine,
+	})
 
 	middleware.Run(app) // Setup middleware
+	//templates.Run(app)
 
 	// Setup Static files routes
 	staticType := fiber.Static{
@@ -33,7 +38,7 @@ func main() {
 		staticType.CacheDuration = 30 * time.Minute
 		staticType.Compress = true
 	}
-	app.Static("/", "../../site/")
+	app.Static("/", "../../site/", staticType)
 
 	auth.Setup(app) // Setup Register, Login Routes
 

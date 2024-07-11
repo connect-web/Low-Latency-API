@@ -31,3 +31,9 @@ func Unauthorized(c fiber.Ctx) error {
 		"error": "Unauthorized",
 	})
 }
+
+func CaptchaFailed(c fiber.Ctx) error {
+	return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+		"error": "Captcha failed, reload the page and try again.",
+	})
+}

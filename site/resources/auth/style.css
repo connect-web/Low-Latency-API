@@ -164,7 +164,7 @@ input[type="submit"] {
           flex: 1;
 }
 
-/* modules/login.css */
+/* modules/auth.css */
 
 :root {
   --loginBorderRadus: 0.25rem;

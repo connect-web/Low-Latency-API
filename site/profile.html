@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
-    <link  href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet">
-    <link  rel="stylesheet" href="resources/auth/style.css">
-    <link  rel="icon" type="image/x-icon" href="./resources/icons/Ll.ico">
+    <title>Dashboard</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet">
+    <link rel="stylesheet" href="resources/auth/style.css">
+    <link rel="icon" type="image/x-icon" href="./resources/icons/Ll.ico">
 
 </head>
 
@@ -35,12 +35,10 @@
             <input id="login__password" type="password" name="password" class="form__input" placeholder="Password"
                    required>
         </div>
-        <div class="h-captcha" data-sitekey="5aa25af8-05c6-4b6c-ab92-780a9810ee16" data-theme="dark"></div>
 
         <div class="form__field">
             <input type="submit" value="Sign In">
         </div>
-
 
     </form>
 
@@ -82,14 +80,86 @@
 
 <script>
 
+    function getCsrf(){
+        let csrfToken = "";
+        const cookies = document.cookie.split(";");
+        for (let i = 0; i < cookies.length; i++) {
+            let cookiePair = cookies[i].split('=');
+            console.log(cookiePair);
+            if (cookiePair[0].trim() === "csrf_") {
+                csrfToken = cookiePair[1];
+                console.log(cookiePair)
+                break; // Exit the loop once the CSRF token is found
+            }
+        }
+        return csrfToken;
+    }
 
+    document.addEventListener("DOMContentLoaded", function() {
+        const form = document.getElementById("loginForm");
+
+        form.addEventListener("submit", function(event) {
+            event.preventDefault();
+            let csrfToken = getCsrf();
+
+            if (csrfToken === ""){
+                fetch('/api/csrf', {
+                    method: 'GET',
+                })
+                csrfToken = getCsrf();
+            }
+
+
+
+
+            function sendRequest(csrfToken) {
+                const formData = new FormData(form);
+                const jsonData = {};
+
+                formData.forEach((value, key) => {
+                    jsonData[key] = value;
+                });
+
+                fetch('/api/login', {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": csrfToken,
+
+                    },
+                    body: JSON.stringify(jsonData)
+                })
+                    .then(response => {
+                        if (response.status === 403) {
+                            return response.json().then(data => {
+                                if (data.csrfToken) {
+                                    sendRequest(data.csrfToken); // Retry with new CSRF token
+                                } else {
+                                    console.error("Error:", data.error);
+                                }
+                            });
+                        } else {
+                            return response.json();
+                        }
+                    })
+                    .then(data => {
+                        if (data) {
+                            console.log(data);
+                            // Handle the response data
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                        // Handle the error
+                    });
+            }
+
+            sendRequest(csrfToken); // Initial request without CSRF token
+        });
+    });
 </script>
 </body>
 
-<script  src="./resources/js/unauth-session.js"></script>
-<script  src="./resources/auth/auth.js"></script>
-<script  src="./resources/auth/login.js"></script>
-
-<script  src="https://js.hcaptcha.com/1/api.js" async defer ></script>
+<script src="./resources/js/unauth-session.js"></script>
 
 </html>

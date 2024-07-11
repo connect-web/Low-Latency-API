@@ -3,19 +3,24 @@ package auth
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/connect-web/Low-Latency-API/internal/captcha"
 	"github.com/connect-web/Low-Latency-API/internal/util"
 	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/log"
 )
 
 type LoginType struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
+	Hcaptcha string `json:"h-captcha-response"`
+	Gcaptcha string `json:"g-recaptcha-response"`
 }
 
 type RegisterType struct {
 	Username string `json:"username"`
-	Code     string `json:"code"`
 	Password string `json:"password"`
+	Hcaptcha string `json:"h-captcha-response"`
+	Gcaptcha string `json:"g-recaptcha-response"`
 }
 
 func Register(c fiber.Ctx) error {
@@ -24,6 +29,7 @@ func Register(c fiber.Ctx) error {
 	if err := json.Unmarshal(c.Body(), &user); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Cannot parse JSON"})
 	}
+	fmt.Println(user)
 
 	if validName := validUsername(user.Username); !validName {
 		return c.JSON(fiber.Map{"error": "This username is not valid"})
@@ -34,6 +40,19 @@ func Register(c fiber.Ctx) error {
 	}
 
 	fmt.Printf("Signup: %s:%s\n", user.Username, user.Password)
+	// require captcha before checking password hash.
+
+	success, captchaErr := captcha.VerifyHCaptcha(user.Hcaptcha)
+	if captchaErr != nil {
+		log.Fatalf("Error verifying hCaptcha: %v", captchaErr)
+	}
+
+	if !success {
+		return util.CaptchaFailed(c)
+	}
+
+	fmt.Println("hCaptcha verification succeeded")
+
 	exists, err := usernameExists(user.Username)
 	if err {
 		fmt.Println("user exists internal")
@@ -58,8 +77,8 @@ func Register(c fiber.Ctx) error {
 
 	sessionErr := createSession(user.Username, c)
 	if sessionErr != nil {
-		// if the session fails to create on register then redirect to login
-		// frontend must redirect to login
+		// if the session fails to create on register then redirect to auth
+		// frontend must redirect to auth
 		return c.JSON(fiber.Map{"message": "User registered, Login required."})
 	} else {
 		// redirect to profile page
@@ -69,12 +88,12 @@ func Register(c fiber.Ctx) error {
 }
 
 func Login(c fiber.Ctx) error {
-	fmt.Println("User sent login request.")
+	fmt.Println("User sent auth request.")
 	var user LoginType
 	if err := json.Unmarshal(c.Body(), &user); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Cannot parse JSON"})
 	}
-
+	fmt.Println(user)
 	if user.Username == "" || !validUsername(user.Username) {
 		return util.InvalidCredentials(c)
 	}
@@ -85,8 +104,21 @@ func Login(c fiber.Ctx) error {
 
 	storedPassword, valid := LoginGetPassword(user.Username)
 	if !valid {
-		return util.InternalServerError(c)
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Failed to verify user, are you sure your username is correct?"})
 	}
+
+	// require captcha before checking password hash.
+
+	success, captchaErr := captcha.VerifyHCaptcha(user.Hcaptcha)
+	if captchaErr != nil {
+		log.Fatalf("Error verifying hCaptcha: %v", captchaErr)
+	}
+
+	if !success {
+		return util.CaptchaFailed(c)
+	}
+
+	fmt.Println("hCaptcha verification succeeded")
 
 	match := verifyPassword(storedPassword, user.Password)
 

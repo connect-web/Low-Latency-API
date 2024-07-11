@@ -16,6 +16,21 @@ var CsrfMiddleware = csrf.New(csrf.Config{
 	CookieSameSite: "Lax",
 	Expiration:     1 * time.Hour,
 	KeyGenerator:   utils.UUIDv4,
+	// Custom error handler
+	ErrorHandler: func(c fiber.Ctx, err error) error {
+		if err.Error() == "forbidden" {
+			// Remove the CSRF cookie
+			c.Cookie(&fiber.Cookie{
+				Name:     "csrf_",
+				Value:    "",
+				Expires:  time.Now().Add(-1 * time.Hour),
+				SameSite: "Lax",
+			})
+		}
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
+			"error": "CSRF token is invalid or missing",
+		})
+	},
 })
 
 func Setup(app *fiber.App) {
