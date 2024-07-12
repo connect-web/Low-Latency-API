@@ -10,6 +10,28 @@ import (
 	"github.com/gofiber/fiber/v3/middleware/logger"
 )
 
+func Run(app *fiber.App) {
+	// This is for setting up the global middleware required on all routes.
+
+	// Logging middleware
+	app.Use(logger.New(logger.Config{}))
+
+	// Compression
+	app.Use(compress.New(compress.Config{
+		Level: compress.LevelBestSpeed, // or compress.LevelBestCompression
+	}))
+
+	// Content-Security-Policy
+	app.Use(setCSP())
+
+	// Use Helmet middleware with custom CSP
+	/*
+		app.Use(helmet.New(helmet.Config{
+				ContentSecurityPolicy: "default-src 'self'; script-src 'self' 'nonce-%s' https://hcaptcha.com https://*.hcaptcha.com; frame-src 'self' https://hcaptcha.com https://*.hcaptcha.com; style-src 'self' 'nonce-%s' https://hcaptcha.com https://*.hcaptcha.com; img-src 'self' https://*.hcaptcha.com; connect-src 'self' https://hcaptcha.com https://*.hcaptcha.com",
+			}))
+	*/
+}
+
 // GenerateNonce generates a random nonce for each request
 func GenerateNonce() string {
 	nonce := make([]byte, 16)
@@ -34,27 +56,4 @@ func setCSP() fiber.Handler {
 		))
 		return c.Next()
 	}
-}
-
-func Run(app *fiber.App) {
-	app.Use(compress.New(compress.Config{
-		Level: compress.LevelBestSpeed, // or compress.LevelBestCompression
-	}))
-
-	// Use Helmet middleware with custom CSP
-	/*
-		app.Use(helmet.New(helmet.Config{
-				ContentSecurityPolicy: "default-src 'self'; script-src 'self' 'nonce-%s' https://hcaptcha.com https://*.hcaptcha.com; frame-src 'self' https://hcaptcha.com https://*.hcaptcha.com; style-src 'self' 'nonce-%s' https://hcaptcha.com https://*.hcaptcha.com; img-src 'self' https://*.hcaptcha.com; connect-src 'self' https://hcaptcha.com https://*.hcaptcha.com",
-			}))
-	*/
-
-	app.Use(setCSP())
-
-	// Logging middleware
-	app.Use(logger.New(logger.Config{}))
-
-	RateLimit(app)
-
-	RewriteEngine(app)
-
 }

@@ -9,11 +9,13 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"time"
 )
 
 var (
-	SecretKey = os.Getenv("hcaptchaSecret") // environmental variable containing secret.
-	VerifyURL = "https://hcaptcha.com/siteverify"
+	SecretKey       = os.Getenv("hcaptchaSecret") // environmental variable containing secret.
+	VerifyURL       = "https://hcaptcha.com/siteverify"
+	request_counter int
 )
 
 type hCaptchaResponse struct {
@@ -21,7 +23,16 @@ type hCaptchaResponse struct {
 	// other fields like error codes can be added as needed
 }
 
+func counter() {
+	request_counter++
+	if request_counter%10 == 0 {
+		currentTime := time.Now().Format("15:04-02/01/2006")
+		fmt.Printf("%d Captcha requests %v\n", request_counter, currentTime)
+	}
+}
+
 func VerifyHCaptcha(token string) (bool, error) {
+	counter()
 	data := url.Values{}
 	data.Set("secret", SecretKey)
 	data.Set("response", token)
@@ -59,7 +70,7 @@ func VerifyHCaptcha(token string) (bool, error) {
 	return hCaptchaResp.Success, nil
 }
 
-func main() {
+func test() {
 	token := "your_h-captcha-response_token" // Replace with the actual token from the client
 
 	success, err := VerifyHCaptcha(token)

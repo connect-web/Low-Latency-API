@@ -3,43 +3,34 @@ package auth
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/connect-web/Low-Latency-API/internal/captcha"
+	"github.com/connect-web/Low-Latency-API/internal/api/auth/captcha"
+	"github.com/connect-web/Low-Latency-API/internal/db/auth"
+	"github.com/connect-web/Low-Latency-API/internal/model"
 	"github.com/connect-web/Low-Latency-API/internal/util"
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/log"
 )
 
-type LoginType struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Hcaptcha string `json:"h-captcha-response"`
-	Gcaptcha string `json:"g-recaptcha-response"`
-}
-
-type RegisterType struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Hcaptcha string `json:"h-captcha-response"`
-	Gcaptcha string `json:"g-recaptcha-response"`
+func Logout(c fiber.Ctx) error {
+	fmt.Println("User sent logout request.")
+	sess, _ := UserSessionStore.Get(c)
+	sess.Destroy()
+	return c.JSON(fiber.Map{"message": "Logged out"})
 }
 
 func Register(c fiber.Ctx) error {
-	fmt.Println("User sent register request.")
-	var user RegisterType
+	var user model.RegisterType
 	if err := json.Unmarshal(c.Body(), &user); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Cannot parse JSON"})
 	}
-	fmt.Println(user)
 
-	if validName := validUsername(user.Username); !validName {
+	if validName := auth.ValidUsername(user.Username); !validName {
 		return c.JSON(fiber.Map{"error": "This username is not valid"})
 	}
 
-	if validPass := validPassword(user.Password); !validPass {
+	if validPass := auth.ValidPassword(user.Password); !validPass {
 		return c.JSON(fiber.Map{"error": "Your password must be 8-32 characters and can only contain letters and numbers."})
 	}
-
-	fmt.Printf("Signup: %s:%s\n", user.Username, user.Password)
 	// require captcha before checking password hash.
 
 	success, captchaErr := captcha.VerifyHCaptcha(user.Hcaptcha)
@@ -51,9 +42,7 @@ func Register(c fiber.Ctx) error {
 		return util.CaptchaFailed(c)
 	}
 
-	fmt.Println("hCaptcha verification succeeded")
-
-	exists, err := usernameExists(user.Username)
+	exists, err := auth.UsernameExists(user.Username)
 	if err {
 		fmt.Println("user exists internal")
 		return util.InternalServerError(c)
@@ -62,13 +51,13 @@ func Register(c fiber.Ctx) error {
 		return c.JSON(fiber.Map{"error": "User already exists"})
 	}
 
-	hashedPass, passErr := hashPassword(user.Password)
+	hashedPass, passErr := auth.HashPassword(user.Password)
 	if passErr != nil {
 		fmt.Println("hashPassword internal")
 		return util.InternalServerError(c)
 	}
 
-	userRegistered := RegisterUserDatabase(user.Username, hashedPass)
+	userRegistered := auth.RegisterUserDatabase(user.Username, hashedPass)
 
 	if !userRegistered {
 		fmt.Println("user not registered internal")
@@ -88,21 +77,19 @@ func Register(c fiber.Ctx) error {
 }
 
 func Login(c fiber.Ctx) error {
-	fmt.Println("User sent auth request.")
-	var user LoginType
+	var user model.LoginType
 	if err := json.Unmarshal(c.Body(), &user); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Cannot parse JSON"})
 	}
-	fmt.Println(user)
-	if user.Username == "" || !validUsername(user.Username) {
+	if user.Username == "" || !auth.ValidUsername(user.Username) {
 		return util.InvalidCredentials(c)
 	}
 
-	if !validPassword(user.Password) {
+	if !auth.ValidPassword(user.Password) {
 		return util.InvalidCredentials(c)
 	}
 
-	storedPassword, valid := LoginGetPassword(user.Username)
+	storedPassword, valid := auth.LoginGetPassword(user.Username)
 	if !valid {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Failed to verify user, are you sure your username is correct?"})
 	}
@@ -118,9 +105,7 @@ func Login(c fiber.Ctx) error {
 		return util.CaptchaFailed(c)
 	}
 
-	fmt.Println("hCaptcha verification succeeded")
-
-	match := verifyPassword(storedPassword, user.Password)
+	match := auth.VerifyPassword(storedPassword, user.Password)
 
 	if !match {
 		return util.InvalidCredentials(c)
@@ -135,11 +120,4 @@ func Login(c fiber.Ctx) error {
 
 	return util.InternalServerError(c)
 
-}
-
-func Logout(c fiber.Ctx) error {
-	fmt.Println("User sent logout request.")
-	sess, _ := UserSessionStore.Get(c)
-	sess.Destroy()
-	return c.JSON(fiber.Map{"message": "Logged out"})
 }

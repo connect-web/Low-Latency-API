@@ -27,12 +27,12 @@ var iterations = 14
 
 // Hashing
 
-func hashPassword(password string) ([]byte, error) {
+func HashPassword(password string) ([]byte, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password+pepper), iterations)
 	return hashedPassword, err
 }
 
-func verifyPassword(storedPassword []byte, password string) bool {
+func VerifyPassword(storedPassword []byte, password string) bool {
 	passwordCompare := bcrypt.CompareHashAndPassword(storedPassword, []byte(password+pepper))
 	return passwordCompare == nil
 }
@@ -43,7 +43,7 @@ func isBytesTooLarge(hashedPassword []byte) bool {
 }
 
 // Validation
-func validPassword(password string) bool {
+func ValidPassword(password string) bool {
 	if isPasswordTooLarge(password) {
 		return false
 	}
@@ -53,7 +53,7 @@ func validPassword(password string) bool {
 	return true
 }
 
-func validUsername(username string) bool {
+func ValidUsername(username string) bool {
 	// Define the regex pattern
 	pattern := `^[a-zA-Z0-9]{1,32}$`
 

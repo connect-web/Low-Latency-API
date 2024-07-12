@@ -7,7 +7,7 @@ import (
 	"log"
 )
 
-func usernameExists(username string) (exists bool, error bool) {
+func UsernameExists(username string) (exists bool, error bool) {
 	fmt.Println("called usernameExists")
 	client := db.NewDBClient()
 	if connectErr := client.Connect(); connectErr != nil {

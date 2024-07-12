@@ -1,4 +1,4 @@
-package api
+package v1
 
 import (
 	"errors"
@@ -10,8 +10,8 @@ import (
 	"strconv"
 )
 
-func GetPlayersByExperienceHandler(c fiber.Ctx) error {
-	experienceThreshold, err := extractExperienceParams(c)
+func GetPlayersByLevelHandler(c fiber.Ctx) error {
+	LevelThreshold, err := extractLevelParams(c)
 	if err != nil {
 		return util.ErrorResponse(c, err.Error())
 	}
@@ -27,11 +27,11 @@ func GetPlayersByExperienceHandler(c fiber.Ctx) error {
 		}
 	}()
 
-	query, params := db.BuildPlayersByExperienceQuery(experienceThreshold)
+	query, params := db.BuildPlayersByLevelQuery(LevelThreshold)
 	fmt.Println(query)
 	fmt.Println(params)
 
-	players, err := client.QueryDBSimplePlayers(query, params, db.HandleSimplePlayerRowExperience)
+	players, err := client.QueryDBSimplePlayers(query, params, db.HandleSimplePlayerRowLevel)
 	if err != nil {
 		return util.InternalServerError(c)
 	}
@@ -43,8 +43,8 @@ func GetPlayersByExperienceHandler(c fiber.Ctx) error {
 	return c.JSON(players)
 }
 
-func extractExperienceParams(c fiber.Ctx) (map[string]int64, error) {
-	thresholds := map[string]int64{}
+func extractLevelParams(c fiber.Ctx) (map[string]int, error) {
+	thresholds := map[string]int{}
 
 	queryParams := c.Context().QueryArgs()
 
@@ -53,9 +53,9 @@ func extractExperienceParams(c fiber.Ctx) (map[string]int64, error) {
 		skillName := string(key)
 		_, exists := util.SkillsMap[skillName]
 		if exists {
-			experienceThreshold, err := strconv.ParseInt(string(value), 10, 64)
+			LevelThreshold, err := strconv.ParseInt(string(value), 10, 32)
 			if err == nil {
-				thresholds[util.Title.String(skillName)] = experienceThreshold
+				thresholds[util.Title.String(skillName)] = int(LevelThreshold)
 			}
 		}
 	})

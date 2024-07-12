@@ -33,14 +33,21 @@ var CsrfMiddleware = csrf.New(csrf.Config{
 	},
 })
 
-func Setup(app *fiber.App) {
-
-	app.Post("/api/register", Register, CsrfMiddleware)
-	app.Post("/api/login", Login, CsrfMiddleware)
-	app.Post("/api/logout", Logout, CsrfMiddleware)
-
-	app.Get("/api/csrf", func(c fiber.Ctx) error {
+func CreateRouter(app fiber.Router) {
+	app.Post("/register", Register)
+	app.Post("/login", Login)
+	app.Post("/logout", Logout)
+	app.Get("/csrf", func(c fiber.Ctx) error {
 		return c.JSON(fiber.Map{"Valid": true})
-	}, CsrfMiddleware)
+	})
 
+}
+
+func createSession(username string, c fiber.Ctx) error {
+	sess, err := UserSessionStore.Get(c)
+	if err != nil {
+		return err
+	}
+	sess.Set("username", username)
+	return sess.Save()
 }
