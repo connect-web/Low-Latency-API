@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function() {
             jsonData[key] = value;
         });
 
-        sendRequest('/api/login', jsonData, csrfToken)
+        sendRequest('/api/auth/login', jsonData, csrfToken)
             .then(data => {
                 console.log(data);
                 // Handle the response data

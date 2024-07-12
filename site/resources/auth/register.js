@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         const csrfToken = fetchCsrfTokenIfNeeded();
 
-        sendRequest('/api/register', jsonData, csrfToken)
+        sendRequest('/api/auth/register', jsonData, csrfToken)
             .then(data => {
                 console.log(data);
                 // Handle the response data
