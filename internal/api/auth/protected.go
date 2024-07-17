@@ -7,11 +7,11 @@ import (
 )
 
 func Protected(c fiber.Ctx) error {
-	sess, err := UserSessionStore.Get(c)
+	username, err := GetUsername(c)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Session retrieval error"})
+		return util.InternalServerError(c)
 	}
-	if sess.Get("username") == nil {
+	if username == "" {
 		return util.Unauthorized(c)
 	}
 	return c.Next()
