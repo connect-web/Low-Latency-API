@@ -1,12 +1,17 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"github.com/connect-web/Low-Latency-API/internal/api"
+	"github.com/connect-web/Low-Latency-API/internal/api/auth"
 	"github.com/connect-web/Low-Latency-API/internal/api/middleware"
-	"github.com/connect-web/Low-Latency-API/internal/templates"
+	"github.com/connect-web/Low-Latency-API/internal/db"
+	"github.com/connect-web/Low-Latency-API/internal/db/globalStats"
+	"github.com/connect-web/storageself/postgres"
 	"github.com/gofiber/fiber/v3"
-	"github.com/gofiber/template/html/v2"
+	"github.com/gofiber/fiber/v3/middleware/session"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"log"
 	"os"
 	"time"
@@ -18,13 +23,49 @@ var (
 	front_end     = envVar == "site" // True if front_end , False if local development
 )
 
-func main() {
+func listRoutes(app *fiber.App) {
+	fmt.Println("Defined routes:")
+	for _, routes := range app.Stack() {
+		for _, route := range routes {
+			fmt.Printf("%s %s\n", route.Method, route.Path)
+		}
+	}
+}
 
-	engine := html.New("../../templates", ".html")
-	app := fiber.New(fiber.Config{Views: engine})
+func main() {
+	go globalStats.GlobalStatsWorker() // starts a worker that periodically updates the global ban count statistics
+
+	config, err := pgxpool.ParseConfig(db.GetUrl())
+
+	if err != nil {
+		log.Fatalf("Unable to parse DATABASE_URL %v\n", err)
+	}
+
+	config.MaxConns = 2
+
+	pool, connectConfigErr := pgxpool.NewWithConfig(context.Background(), config)
+	if connectConfigErr != nil {
+		log.Fatalf("Unable to create connection pool: %v\n", err)
+	}
+	defer pool.Close()
+
+	store := postgres.New(
+		postgres.Config{
+			ConnectionURI: db.GetUrl(),
+			Table:         "users.fiber_storage",
+			Reset:         false,
+			GCInterval:    1 * time.Minute,
+		})
+	auth.UserSessionStore = session.New(session.Config{Storage: store})
+
+	//engine := html.New("../../templates", ".html")
+	app := fiber.New(fiber.Config{
+		//Views: engine
+	})
 
 	// Setup middleware for all Routers
 	middleware.Run(app)
+	//templates.Run(app)
 
 	// Setup API's
 	api_routes := app.Group("/api")
@@ -33,11 +74,9 @@ func main() {
 	// Setup Static files
 	RegisterStatic(app)
 
-	templates.Run(app)
-
 	// Display environment, Dev / Server
 	fmt.Printf("Front end mode = %v\n", front_end)
-
+	listRoutes(app)
 	if front_end {
 		log.Fatal(app.Listen(":443", fiber.ListenConfig{CertFile: certDirectory + "fullchain.pem", CertKeyFile: certDirectory + "privkey.pem"}))
 	} else {
