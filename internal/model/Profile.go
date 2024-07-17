@@ -1,17 +1,17 @@
 package model
 
+import "time"
+
 type ProfileStats struct {
+	Username         string
 	BotsTracked      int
 	BotsBanned       int
+	BotsPlayerIds    []int
 	BannedExperience int64
-	BotsAddedToday   int
+	PlayersAdded     int
 }
 
 var (
-	TotalBans = 0                      // ON STARTUP WE FETCH THIS AND USE IT GLOBALLY
-	UserStats = map[int]ProfileStats{} // This will be updated every 12 / 24 Hours
+	Last_updated = time.Now().Add(-500 * time.Hour)
+	TotalBans    = 0 // ON STARTUP WE FETCH THIS AND USE IT GLOBALLY
 )
-
-func UpdateGlobalStatistics() {
-	// pass
-}
