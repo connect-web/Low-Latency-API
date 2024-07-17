@@ -61,6 +61,7 @@ func VerifyHCaptcha(token string) (bool, error) {
 	}
 
 	// Parse the JSON response
+	fmt.Printf("captcha: %s\n", string(body))
 	var hCaptchaResp hCaptchaResponse
 	err = json.Unmarshal(body, &hCaptchaResp)
 	if err != nil {
