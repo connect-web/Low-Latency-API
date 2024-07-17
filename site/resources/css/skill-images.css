@@ -1,0 +1,15 @@
+.skills-container {
+    display: flex;          /* Use flexbox for layout */
+    flex-wrap: nowrap;      /* Prevent wrapping to ensure horizontal layout */
+    overflow-x: auto;       /* Allow horizontal scrolling if content overflows */
+    white-space: nowrap;    /* Prevent wrapping at white space inside the container */
+    align-items: center;    /* Align items vertically in the center */
+    gap: 4px;               /* Optional: Add a small gap between images */
+}
+
+.img-fluid {
+    height: 24px;           /* Set a fixed height for the images */
+    width: auto;            /* Width will be adjusted automatically preserving aspect ratio */
+    min-width: 24px;        /* Ensure a minimum width in case of style conflicts */
+    display: inline-block;  /* Display images inline-block */
+}

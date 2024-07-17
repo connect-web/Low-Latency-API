@@ -37,10 +37,12 @@ function sendRequest(url, jsonData, csrfToken, method = "POST") {
                         return sendRequest(url, jsonData, data.csrfToken, method); // Retry with new CSRF token
                     } else {
                         console.error("Error:", data.error);
+                        /*
                         if (data.error === "CSRF token is invalid or missing"){
                             console.log("Csrf validation retrying!")
                             return sendRequest(url, jsonData, fetchCsrfTokenIfNeeded(), method)
                         }
+                         */
                         throw new Error(data.error);
                     }
                 });

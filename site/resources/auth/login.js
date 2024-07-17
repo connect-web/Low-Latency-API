@@ -16,6 +16,9 @@ document.addEventListener("DOMContentLoaded", function() {
         sendRequest('/api/auth/login', jsonData, csrfToken)
             .then(data => {
                 console.log(data);
+                if (data.message === "Logged in"){
+                    window.location.replace("/profile");
+                }
                 // Handle the response data
             })
             .catch(error => {

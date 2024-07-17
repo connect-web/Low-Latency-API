@@ -81,9 +81,9 @@ html {
 }
 
 body {
-  background-color: #2c3338;
-  background-color: var(--bodyBackgroundColor);
-  color: #606468;
+  height: 100%;
+  background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+  overflow: hidden;
   color: var(--bodyColor);
   font-family: "Open Sans", sans-serif;
   font-family: var(--bodyFontFamily), var(--bodyFontFamilyFallback);

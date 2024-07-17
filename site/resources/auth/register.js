@@ -16,6 +16,12 @@ document.addEventListener("DOMContentLoaded", function() {
         sendRequest('/api/auth/register', jsonData, csrfToken)
             .then(data => {
                 console.log(data);
+                if (data.message === "User registered"){
+                    window.location.replace("/profile");
+                }
+                if (data.message === "User registered, Login required."){
+                    window.location.replace("/login");
+                }
                 // Handle the response data
             })
             .catch(error => {

@@ -100,49 +100,7 @@ function populateTable() {
 
 }
 
-// Call populateTable when you need to create or recreate the table
 populateTable();
-
-/*
-skills.forEach(skill => {
-    const colDiv = document.createElement('div');
-    colDiv.className = 'skillContainer pt-1'; // mb-4 for margin bottom
-
-    const img = document.createElement('img');
-
-    img.src = `./resources/imgs/hiscore/skill_icons/${skill}.png`;
-    img.alt = `Icon ${skill}`;
-    img.className = 'img-fluid skill'; // Bootstrap class for responsive images
-
-
-    const controlContainer = document.createElement('div');
-    controlContainer.className = 'control-container';
-
-    const plusIcon = document.createElement('i')
-    plusIcon.className = 'fa fa-plus fa-selectable fa-selected-plus'
-    plusIcon.ariaHidden = 'true'
-
-    const minusIcon = document.createElement('i')
-    minusIcon.className = 'fa fa-minus fa-selectable fa-selected-minus'
-    minusIcon.ariaHidden = 'true'
-
-    const input = document.createElement('input');
-    input.placeholder = "99";
-    input.className = 'textInput';
-    input.style.display = 'block'; // Change to 'block' to make it visible by default
-    input.id = skill;
-
-    controlContainer.appendChild(minusIcon)
-    controlContainer.appendChild(plusIcon)
-
-    colDiv.appendChild(img);
-    colDiv.appendChild(controlContainer); // Add control container here
-    colDiv.appendChild(input);
-    container.appendChild(colDiv);
-})
-
- */
-
 
 
 
