@@ -44,14 +44,13 @@ func GenerateNonce() string {
 
 func setCSP() fiber.Handler {
 	return func(c fiber.Ctx) error {
-		//nonce := GenerateNonce()
-		//c.Locals("nonce", nonce)
 		c.Set("Content-Security-Policy", fmt.Sprintf(
 			"default-src 'self'; "+
-				"script-src 'self' https://hcaptcha.com https://*.hcaptcha.com; "+
+				"script-src 'self' https://hcaptcha.com https://*.hcaptcha.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; "+
+				"style-src 'self' https://hcaptcha.com https://*.hcaptcha.com https://fonts.googleapis.com https://cdn.jsdelivr.net; "+
+				"img-src 'self' https://*.hcaptcha.com https://cdnjs.cloudflare.com; "+
+				"font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; "+
 				"frame-src 'self' https://hcaptcha.com https://*.hcaptcha.com; "+
-				"style-src 'self' https://hcaptcha.com https://*.hcaptcha.com; "+
-				"img-src 'self' https://*.hcaptcha.com; "+
 				"connect-src 'self' https://hcaptcha.com https://*.hcaptcha.com",
 		))
 		return c.Next()
