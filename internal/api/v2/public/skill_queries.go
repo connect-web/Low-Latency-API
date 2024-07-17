@@ -11,18 +11,16 @@ import (
 
 var SKILLER_TOPLIST_QUERY = `
 select 
-    s.id, s.skills, sc.amount
-from grouped.skills_count sc
-	LEFT JOIN grouped.skills s on s.id = sc.id
-	LEFT JOIN GROUPED.skills_users su on su.id = sc.id
-ORDER BY SC.amount DESC
+    id, skills, amount
+from grouped.skillers
+ORDER BY amount DESC
 LIMIT 100;
 `
 
 var SKILLER_TOPLIST_USERS_QUERY = `
 SELECT
     p.name,
-    pls.combat_level, pls.overall, pls.total_level,
+    COALESCE(pls.combat_level, 0), COALESCE(pls.overall, 0), COALESCE(pls.total_level, 0),
     pl.skills_experience, pl.skills_ratio, pl.skills_levels, pl.minigames,
     pg.skills_experience, pg.skills_ratio, pg.minigames
 
@@ -34,7 +32,7 @@ WHERE
     pg.playerid = ANY(
     select
         unnest(s.playerids)
-    from grouped.skills_users s
+    from grouped.skillers s
     where id = $1
     );
 `
