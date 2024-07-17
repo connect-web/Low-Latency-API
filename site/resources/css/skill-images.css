@@ -13,3 +13,22 @@
     min-width: 24px;        /* Ensure a minimum width in case of style conflicts */
     display: inline-block;  /* Display images inline-block */
 }
+.img-fluid-hiscores{
+    height: 24px;
+    width: auto;
+    min-width: 20px;
+}
+
+.skills-container.wrapped {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 600px; /* Adjust as necessary */
+}
+
+.skills-container.wrapped img {
+    margin: 5px;
+}
+
+.skills-container.wrapped p {
+    margin: 5px;
+}
