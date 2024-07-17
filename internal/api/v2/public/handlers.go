@@ -1,6 +1,7 @@
 package public
 
 import (
+	"fmt"
 	"github.com/connect-web/Low-Latency-API/internal/util"
 	"github.com/gofiber/fiber/v3"
 	"strconv"
@@ -28,9 +29,10 @@ func GetSkillToplistUsers(c fiber.Ctx) error {
 	if err != nil {
 		return util.InternalServerError(c)
 	}
-
+	fmt.Println(skillId)
 	players, err := QuerySkillToplistUsers(skillId)
 	if err != nil {
+		fmt.Println(err.Error())
 		return util.InternalServerError(c)
 	}
 
