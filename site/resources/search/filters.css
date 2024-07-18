@@ -1,0 +1,68 @@
+#sort-controls {
+    background-color: #2f2f2f; /* Light background */
+    color: #000000; /* Dark text for contrast */
+    border: 1px solid #cccccc; /* Subtle border */
+    border-radius: 4px; /* Rounded corners */
+    outline: none; /* Remove focus outline */
+    -webkit-appearance: none; /* Disable native UI */
+    -moz-appearance: none; /* Disable native UI */
+    appearance: none; /* Disable native UI */
+    padding: 1em;
+    margin-left: 2em;
+}
+
+#pagination-controls{
+    text-align: right;
+}
+
+.filters {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px; /* Add space between columns */
+
+}
+
+.filter-column {
+    display: flex;
+    flex-direction: column;
+    flex: 1; /* Ensure columns take up equal space */
+    min-width: 350px; /* Ensure a minimum width for each column */
+    background-color: #2f2f2f; /* Light background */
+    border: 1px solid #cccccc; /* Subtle border */
+    padding: 1em;
+    margin-left: 2em;
+}
+
+.filter-column .total_experience{
+    min-width: 300px;
+}
+
+
+.filter-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0;
+    max-width: 100%;
+}
+
+.filter-row input{
+    width: 300px;
+}
+
+.filter-row label {
+    line-height: 2;
+}
+
+/* Remove spinners from number input in Chrome, Safari, Edge, and Opera */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Remove spinners from number input in Firefox */
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+

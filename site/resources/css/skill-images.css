@@ -34,3 +34,9 @@
 .skills-container.wrapped img {
     vertical-align: middle;  /* Align the images vertically in the middle */
 }
+
+
+
+.minigame-toplist-image img{
+    height: 48px;
+}

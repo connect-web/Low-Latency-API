@@ -1,10 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const toplistApiURL = 'http://127.0.0.1:4050/api/v2/public/skill-toplist';
+    const toplistApiURL = '/api/v2/public/boss-minigame-toplist';
     let toplistData = [];
     let currentPage = 1;
     let totalPages = 0;
-
-
 
     // Fetch data from the Toplist API
     async function fetchToplistData() {
@@ -23,20 +21,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // Create table row for toplist
     function createToplistRow(item) {
         const row = document.createElement('tr');
-        row.dataset.attrId = item.id;
+        row.dataset.attrId = item.minigame;
 
-        // Skills cell
-        const skillsCell = document.createElement('td');
-        skillsCell.className = 'font-normal px-3 pt-0 pb-3 border-b border-gray-200 dark:border-gray-800';
-        const skillsContainer = document.createElement('div');
-        skillsContainer.className = 'skills-container';
-        item.skills.forEach(skill => {
-            skillsContainer.innerHTML += `${getSkillImage(skill)}`;
-        });
-        skillsCell.appendChild(skillsContainer);
-        row.appendChild(skillsCell);
+        // Minigame name cell
+        const minigameCell = document.createElement('td');
+        minigameCell.className = 'px-3 pt-0 pb-3 border-b border-gray-200 dark:border-gray-800 minigame-toplist-image';
+        minigameCell.innerHTML = `${getMinigameImage(item.minigame)}`;;
+        row.appendChild(minigameCell);
 
-        // Player count cell
+        // Count cell
         const countCell = document.createElement('td');
         countCell.className = 'font-normal px-3 pt-0 pb-3 border-b border-gray-200 dark:border-gray-800';
         countCell.textContent = item.count;
@@ -49,14 +42,11 @@ document.addEventListener('DOMContentLoaded', function() {
         viewButton.className = 'text-blue-500 hover:underline';
         viewButton.textContent = 'View';
         viewButton.addEventListener('click', () => {
-            setupFilters();
-            fetchPlayersData(item.id);
             skillDetails = {
-                id: item.id,
-                skills: item.skills,
+                skills: [item.minigame],
                 count: item.count,
             }
-            updateSortControls(skillDetails);
+            fetchPlayersData(item.minigame);
         });
         viewCell.appendChild(viewButton);
         row.appendChild(viewCell);
@@ -115,8 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
             paginationContainer.appendChild(pageButton);
         }
 
-
-
+        // Next button
         const nextButton = document.createElement('button');
         nextButton.className = 'inline-flex items-center h-8 w-8 justify-center text-gray-400 rounded-md shadow border border-gray-200 dark:border-gray-800 leading-none';
         nextButton.innerHTML = '<svg class="w-4" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>';
@@ -130,20 +119,20 @@ document.addEventListener('DOMContentLoaded', function() {
         paginationContainer.appendChild(nextButton);
     }
 
-
     function updateTopNav() {
-        const topNavSpan = document.querySelector('.pagination-top');
+        const topNavSpan = document.querySelector('.Toplist .pagination-top');
         topNavSpan.textContent = `Page ${currentPage} of ${totalPages}`;
 
-        const topNavPrevButton = document.querySelector('.pagination-left');
-        const topNavNextButton = document.querySelector('.pagination-right');
+        const topNavPrevButton = document.querySelector('.Toplist .pagination-left');
+        const topNavNextButton = document.querySelector('.Toplist .pagination-right');
 
         // Remove existing event listeners to prevent multiple triggers
         topNavPrevButton.replaceWith(topNavPrevButton.cloneNode(true));
         topNavNextButton.replaceWith(topNavNextButton.cloneNode(true));
 
-        const newTopNavPrevButton = document.querySelector('.pagination-left');
-        const newTopNavNextButton = document.querySelector('.pagination-right');
+        const newTopNavPrevButton = document.querySelector('.Toplist .pagination-left');
+        const newTopNavNextButton = document.querySelector('.Toplist .pagination-right');
+
 
         newTopNavPrevButton.addEventListener('click', () => {
             if (currentPage > 1) {

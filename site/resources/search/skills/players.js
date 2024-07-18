@@ -12,12 +12,21 @@ let totalExpMin = 0, totalExpMax = 10000000000;
 
 async function fetchPlayersData(skillId) {
     try {
-        const response = await fetch(`http://127.0.0.1:4050/api/v2/public/skill-toplist-users?skill-id=${skillId}`);
+        const response = await fetch(`/api/v2/public/skill-toplist-users?skill-id=${skillId}`);
         const jsonData = await response.json();
         playersData = jsonData;
 
+        if (skillDetails.skills.length !== 0){
+            sortPlayersDataInit(skillDetails.skills[0], false)
+        }
+
+
         // Apply initial filters
+        setupFilters();
         applyFilters();
+        updateSortControls(skillDetails);
+
+
     } catch (error) {
         console.error('Error fetching players data:', error);
     }
@@ -33,6 +42,33 @@ function updateTable() {
         const row = createPlayersRow(item);
         tableBody.appendChild(row);
     });
+}
+
+// Sorts the players data and logs the top 3 and bottom 3 entries
+function sortPlayersDataInit(skill, ascending) {
+    // Ensure the data array is not empty and the skill is specified
+    if (!playersData.length || !skill) {
+        console.log("No data to sort or skill not specified");
+        return;
+    }
+
+    // Sorting the players data based on skill gains
+    playersData.sort((a, b) => {
+        const valueA = (a.SkillGains && a.SkillGains[skill]) || 0; // Ensuring the SkillGains object exists
+        const valueB = (b.SkillGains && b.SkillGains[skill]) || 0;
+        return ascending ? valueA - valueB : valueB - valueA;
+    });
+
+    // Printing the sorted data to check the top 3 and bottom 3
+    const top3 = playersData.slice(0, 3);
+    const bottom3 = playersData.slice(-3);
+
+    console.log(`Top 3 players for skill ${skill}:`);
+    top3.forEach(player => console.log(`${player.Username || 'Unnamed'}: ${player.SkillGains[skill] || 0}`));
+
+    console.log(`Bottom 3 players for skill ${skill}:`);
+    bottom3.forEach(player => console.log(`${player.Username || 'Unnamed'}: ${player.SkillGains[skill] || 0}`));
+
 }
 
 // Sorts the players data and logs the top 3 and bottom 3 entries
@@ -64,7 +100,7 @@ function sortPlayersData(skill, ascending) {
 }
 
 
-// Sorting
+
 
 
 function updateSortControls(skillDetails) {
@@ -81,10 +117,15 @@ function updateSortControls(skillDetails) {
         sortDropdown.appendChild(option);
     });
 
+
     // Create the sort direction toggle button using the styled format
     const sortDirectionButton = document.createElement('button');
     sortDirectionButton.className = 'inline-flex mr-3 items-center h-8 pl-2.5 pr-2 rounded-md shadow text-gray-700 dark:text-gray-400 dark:border-gray-800 border border-gray-200 leading-none py-0';
     let isAscending = false; // Default sort order is now highest to lowest
+
+
+
+    // run on the init
 
     // Set the initial arrow icon to indicate descending order
     sortDirectionButton.innerHTML = `
@@ -172,9 +213,10 @@ function applyFilters() {
 // NAVIGATION
 
 function updatePaginationControls() {
-    const pageInfos = document.querySelectorAll('.player-nav-buttons .pagination-top');
-    const prevButtons = document.querySelectorAll('.player-nav-buttons .pagination-left');
-    const nextButtons = document.querySelectorAll('.player-nav-buttons .pagination-right');
+    const pageInfos = document.querySelectorAll('.PlayersTable .player-nav-buttons .pagination-top');
+    const prevButtons = document.querySelectorAll('.PlayersTable .player-nav-buttons .pagination-left');
+    const nextButtons = document.querySelectorAll('.PlayersTable .player-nav-buttons .pagination-right');
+
 
     pageInfos.forEach(pageInfo => {
         pageInfo.textContent = `Page ${currentPlayersPage} of ${totalPlayersPages}`;
