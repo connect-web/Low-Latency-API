@@ -5,14 +5,56 @@
     <title>Search</title>
     <link rel="stylesheet" href="../resources/profile/style.css">
     <link rel="stylesheet" href="../resources/css/skill-images.css">
-
     <style>
-        .no-inherit {
-            all: unset;
+        #sort-controls {
+            background-color: #2f2f2f; /* Light background */
+            color: #000000; /* Dark text for contrast */
+            border: 1px solid #cccccc; /* Subtle border */
+            border-radius: 4px; /* Rounded corners */
+            outline: none; /* Remove focus outline */
+            -webkit-appearance: none; /* Disable native UI */
+            -moz-appearance: none; /* Disable native UI */
+            appearance: none; /* Disable native UI */
+            padding: 1em;
+            margin-left: 2em;
         }
-        .centered-players-text{
-            padding:1em;
+
+        #pagination-controls{
+            text-align: right;
         }
+
+        .filters {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px; /* Add space between columns */
+        }
+
+        .filter-column {
+            display: flex;
+            flex-direction: column;
+            flex: 1; /* Ensure columns take up equal space */
+            min-width: 200px; /* Ensure a minimum width for each column */
+        }
+
+        .filter-item {
+            margin-bottom: 1rem;
+        }
+
+        .filter-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .filter-row label {
+            margin-right: 0.5rem;
+        }
+
+
+
+
+
+
     </style>
 </head>
 <body>
@@ -106,8 +148,76 @@
                             <!-- Pagination buttons will be dynamically inserted here -->
                         </div>
                     </div>
+                </div>
 
                     <hr class="my-8">
+
+
+
+                <div class="PlayersTable pt-4">
+                    <!-- Filters Section -->
+                    <div class="filters flex mb-4 text-right ">
+                        <div class="filter-column mr-5 p-4">
+                            <div class="filter-item">
+                                <label>Combat Filter</label>
+                                <div class="filter-row">
+                                    <label for="combat-min">min:</label>
+                                    <input id="combat-min" type="number" placeholder="min" value="0" min="0" max="126">
+                                </div>
+                                <div class="filter-row">
+                                    <label for="combat-max">max:</label>
+                                    <input id="combat-max" type="number" placeholder="max" value="126" min="0" max="126">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="filter-column mr-5 p-4">
+                            <div class="filter-item">
+                                <label>Total Level Filter</label>
+                                <div class="filter-row">
+                                    <label for="total-level-min">min:</label>
+                                    <input id="total-level-min" type="number" placeholder="min" value="0" min="0" max="2500">
+                                </div>
+                                <div class="filter-row">
+                                    <label for="total-level-max">max:</label>
+                                    <input id="total-level-max" type="number" placeholder="max" value="2500" min="0" max="2500">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="filter-column mr-5 p-4">
+                            <div class="filter-item">
+                                <label>Total Experience Filter</label>
+                                <div class="filter-row">
+                                    <label for="total-exp-min">min:</label>
+                                    <input id="total-exp-min" type="number" placeholder="min" value="0" min="0" max="10000000000">
+                                </div>
+                                <div class="filter-row">
+                                    <label for="total-exp-max">max:</label>
+                                    <input id="total-exp-max" type="number" placeholder="max" value="10000000000" min="0" max="10000000000">
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="flex w-full items-center p-4">
+                            <div class="flex w-full items-center player-nav-buttons">
+                                <div class="ml-auto text-gray-500 text-xs sm:inline-flex hidden items-center p-4">
+                                    <span class="mr-3 pagination-top">Page 1 of 1</span>
+                                    <button class="pagination-left inline-flex mr-2 items-center h-8 w-8 justify-center text-gray-400 rounded-md shadow border border-gray-200 dark:border-gray-800 leading-none py-0">
+                                        <svg class="w-4" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="15 18 9 12 15 6"></polyline>
+                                        </svg>
+                                    </button>
+                                    <button class="pagination-right inline-flex items-center h-8 w-8 justify-center text-gray-400 rounded-md shadow border border-gray-200 dark:border-gray-800 leading-none py-0">
+                                        <svg class="w-4" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="9 18 15 12 9 6"></polyline>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="sort-controls"></div>
+                        </div>
+
+                    </div>
 
 
 
@@ -129,11 +239,29 @@
                             </tbody>
                         </table>
 
-                        <div class="flex w-full mt-5 space-x-2 justify-end" id="players-pagination">
-                            <!-- Pagination buttons for players table will be dynamically inserted here -->
+                        <div class="flex w-full items-center mb-7 player-nav-buttons">
+                            <div class="ml-auto text-gray-500 text-xs sm:inline-flex hidden items-center">
+                                <span class="mr-3 pagination-top">Page 1 of 1</span>
+                                <button class="pagination-left inline-flex mr-2 items-center h-8 w-8 justify-center text-gray-400 rounded-md shadow border border-gray-200 dark:border-gray-800 leading-none py-0">
+                                    <svg class="w-4" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="15 18 9 12 15 6"></polyline>
+                                    </svg>
+                                </button>
+                                <button class="pagination-right inline-flex items-center h-8 w-8 justify-center text-gray-400 rounded-md shadow border border-gray-200 dark:border-gray-800 leading-none py-0">
+                                    <svg class="w-4" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="9 18 15 12 9 6"></polyline>
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+
+
+
+
+
 
 
             </div>
@@ -146,6 +274,7 @@
 <script src="../resources/profile/scripts/profile.js"></script>
 <script src="../resources/profile/scripts/ban-count.js"></script>
 <script src="../resources/search/image-loader.js"></script>
+<script src="../resources/search/skills-players.js"></script>
 <script src="../resources/search/skills.js"></script>
 
 
