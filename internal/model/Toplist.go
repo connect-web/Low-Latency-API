@@ -8,6 +8,6 @@ type SkillToplist struct {
 }
 
 type MinigameToplist struct {
-	Minigame string
-	Count    int
+	Minigame string `json:"minigame"`
+	Count    int    `json:"count"`
 }
