@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
     if (!document.cookie.split('; ').find(row => row.startsWith('csrf_='))) {
-        fetch('/api/csrf', {
+        fetch('/api/auth/csrf', {
             method: 'GET',
         })
             .then(response => response.json())
