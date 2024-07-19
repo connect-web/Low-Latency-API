@@ -7,12 +7,10 @@ import (
 	"github.com/gofiber/fiber/v3"
 )
 
-func GetBanCount(c fiber.Ctx) error {
+func GetLowLatencyStats(c fiber.Ctx) error {
 	username, err := auth.GetUsername(c)
 	if err != nil || username == "" {
 		return util.InternalServerError(c)
 	}
-	return c.JSON(fiber.Map{
-		"TotalBans": model.TotalBans,
-	})
+	return c.JSON(model.LowLatencyStatistics)
 }
