@@ -2,8 +2,8 @@ package Scanner
 
 import (
 	"database/sql"
-	"encoding/json"
 	"github.com/connect-web/Low-Latency-API/internal/model"
+	"github.com/connect-web/Low-Latency-API/internal/util"
 )
 
 func ScanPlayerRows(rows *sql.Rows) ([]model.Player, error) {
@@ -25,13 +25,13 @@ func ScanPlayerRows(rows *sql.Rows) ([]model.Player, error) {
 
 		// now convert bytes into maps
 
-		entry.Skills = decodeJSONToInt64Map(skills)
-		entry.SkillRatios = decodeJSONToFloat64Map(skillRatios)
-		entry.SkillLevels = decodeJSONToIntMap(skillLevels)
-		entry.Minigames = decodeJSONToIntMap(minigames)
-		entry.SkillGains = decodeJSONToFloat64Map(skillGains)
-		entry.SkillGainsRatio = decodeJSONToFloat64Map(skillGainsRatio)
-		entry.MinigameGains = decodeJSONToFloat64Map(minigameGains)
+		entry.Skills = util.DecodeJSONToInt64Map(skills)
+		entry.SkillRatios = util.DecodeJSONToFloat64Map(skillRatios)
+		entry.SkillLevels = util.DecodeJSONToIntMap(skillLevels)
+		entry.Minigames = util.DecodeJSONToIntMap(minigames)
+		entry.SkillGains = util.DecodeJSONToFloat64Map(skillGains)
+		entry.SkillGainsRatio = util.DecodeJSONToFloat64Map(skillGainsRatio)
+		entry.MinigameGains = util.DecodeJSONToFloat64Map(minigameGains)
 
 		results = append(results, entry)
 	}
@@ -41,28 +41,4 @@ func ScanPlayerRows(rows *sql.Rows) ([]model.Player, error) {
 	}
 
 	return results, nil
-}
-
-func decodeJSONToInt64Map(data []byte) map[string]int64 {
-	var result map[string]int64
-	if err := json.Unmarshal(data, &result); err != nil {
-		return make(map[string]int64)
-	}
-	return result
-}
-
-func decodeJSONToIntMap(data []byte) map[string]int {
-	var result map[string]int
-	if err := json.Unmarshal(data, &result); err != nil {
-		return make(map[string]int)
-	}
-	return result
-}
-
-func decodeJSONToFloat64Map(data []byte) map[string]float64 {
-	var result map[string]float64
-	if err := json.Unmarshal(data, &result); err != nil {
-		return make(map[string]float64)
-	}
-	return result
 }
