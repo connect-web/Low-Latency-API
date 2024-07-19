@@ -214,6 +214,24 @@ button {
   overflow: hidden;
 }
 
+#submit-button {
+  all: unset;
+  background-color: var(--black);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 2rem;
+  margin:auto;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border: 1px solid var(--red);
+  box-shadow: 0 0 4px var(--red-shadow);
+  cursor: pointer;
+  perspective: 1000px;
+  position: relative;
+  overflow: hidden;
+
+}
+
 .blurry {
   position: relative;
   transform-style: preserve-3d;
