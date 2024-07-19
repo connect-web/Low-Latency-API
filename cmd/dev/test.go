@@ -1,12 +1,10 @@
 package main
 
 import (
-	"fmt"
-	"github.com/connect-web/Low-Latency-API/internal/db/user"
+	"github.com/connect-web/Low-Latency-API/internal/db/globalStats"
 )
 
 func main() {
-	r, err := user.FetchOrCreateProfile("letmein")
-	fmt.Println(err)
-	fmt.Println(r)
+	globalStats.GetGlobalStats()
+
 }
