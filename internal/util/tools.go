@@ -1,6 +1,7 @@
 package util
 
 import (
+	"encoding/json"
 	"strconv"
 	"strings"
 )
@@ -24,4 +25,28 @@ func StringToIntText(text string) (int, error) {
 	}
 	number, err := strconv.Atoi(text)
 	return number, err
+}
+
+func DecodeJSONToInt64Map(data []byte) map[string]int64 {
+	var result map[string]int64
+	if err := json.Unmarshal(data, &result); err != nil {
+		return make(map[string]int64)
+	}
+	return result
+}
+
+func DecodeJSONToIntMap(data []byte) map[string]int {
+	var result map[string]int
+	if err := json.Unmarshal(data, &result); err != nil {
+		return make(map[string]int)
+	}
+	return result
+}
+
+func DecodeJSONToFloat64Map(data []byte) map[string]float64 {
+	var result map[string]float64
+	if err := json.Unmarshal(data, &result); err != nil {
+		return make(map[string]float64)
+	}
+	return result
 }
