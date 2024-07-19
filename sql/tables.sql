@@ -22,8 +22,13 @@ CREATE SCHEMA IF NOT EXISTS PROFILES;
 
 CREATE TABLE IF NOT EXISTS Profiles.global_stats
 (
-    Bans int
+    Bans int,
+    skills JSONB,
+    minigames JSONB,
+    total_experience BIGINT,
+    last_updated TIMESTAMPTZ
 );
+
 
 
 CREATE TABLE IF NOT EXISTS Profiles.user_stats
