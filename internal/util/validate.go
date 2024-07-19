@@ -115,6 +115,13 @@ var (
 
 var Title = cases.Title(language.English)
 
+func ValidSkill(skill string) bool {
+	lowercase_skill := strings.ToLower(skill)
+
+	_, valid := SkillsMap[lowercase_skill]
+	return valid
+}
+
 func ValidMinigame(minigame string) bool {
 	_, valid := MinigamesMap[minigame]
 	return valid
