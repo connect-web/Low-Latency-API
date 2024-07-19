@@ -8,7 +8,6 @@ import (
 	"github.com/connect-web/Low-Latency-API/internal/model"
 	"github.com/connect-web/Low-Latency-API/internal/util"
 	"github.com/gofiber/fiber/v3"
-	"github.com/gofiber/fiber/v3/log"
 )
 
 func Logout(c fiber.Ctx) error {
@@ -25,7 +24,7 @@ func Register(c fiber.Ctx) error {
 	}
 
 	if validName := auth.ValidUsername(user.Username); !validName {
-		return c.JSON(fiber.Map{"error": "This username is not valid"})
+		return c.JSON(fiber.Map{"error": "This username is not valid."})
 	}
 
 	if validPass := auth.ValidPassword(user.Password); !validPass {
@@ -33,9 +32,14 @@ func Register(c fiber.Ctx) error {
 	}
 	// require captcha before checking password hash.
 
+	if user.Hcaptcha == "" {
+		return util.CaptchaFailed(c)
+	}
+
 	success, captchaErr := captcha.VerifyHCaptcha(user.Hcaptcha)
 	if captchaErr != nil {
-		log.Fatalf("Error verifying hCaptcha: %v", captchaErr)
+		fmt.Printf("Error verifying hCaptcha: %v", captchaErr)
+		return util.InternalServerError(c)
 	}
 
 	if !success {
@@ -48,7 +52,7 @@ func Register(c fiber.Ctx) error {
 		return util.InternalServerError(c)
 	}
 	if exists {
-		return c.JSON(fiber.Map{"error": "User already exists"})
+		return c.JSON(fiber.Map{"error": "Username already exists."})
 	}
 
 	hashedPass, passErr := auth.HashPassword(user.Password)
@@ -89,21 +93,27 @@ func Login(c fiber.Ctx) error {
 		return util.InvalidCredentials(c)
 	}
 
-	storedPassword, valid := auth.LoginGetPassword(user.Username)
-	if !valid {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Failed to verify user, are you sure your username is correct?"})
-	}
-
 	// require captcha before checking password hash.
+
+	if user.Hcaptcha == "" {
+		return util.CaptchaFailed(c)
+	}
 
 	success, captchaErr := captcha.VerifyHCaptcha(user.Hcaptcha)
 	if captchaErr != nil {
-		log.Fatalf("Error verifying hCaptcha: %v", captchaErr)
+		fmt.Printf("Error verifying hCaptcha: %v", captchaErr)
+		return util.InternalServerError(c)
 	}
 
 	if !success {
 		return util.CaptchaFailed(c)
 	}
+
+	storedPassword, valid := auth.LoginGetPassword(user.Username)
+	if !valid {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Failed to verify user, are you sure your username is correct?"})
+	}
+	fmt.Println("Fetched password")
 
 	match := auth.VerifyPassword(storedPassword, user.Password)
 
