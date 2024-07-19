@@ -12,6 +12,14 @@ type ProfileStats struct {
 }
 
 var (
-	Last_updated = time.Now().Add(-500 * time.Hour)
-	TotalBans    = 0 // ON STARTUP WE FETCH THIS AND USE IT GLOBALLY
+	LowLatencyStatistics = GlobalStatistics{Last_updated: time.Date(1990, 1, 1, 1, 1, 1, 1, time.UTC)}
 )
+
+type GlobalStatistics struct {
+	Bans            int
+	Skills          map[string]int64 // Skill : Experience directly from Hiscores
+	Minigames       map[string]int64 // Minigame/activity : score directly from Hiscores
+	TotalExperience int64
+	SuspiciousUsers int
+	Last_updated    time.Time
+}
