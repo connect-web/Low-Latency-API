@@ -4,14 +4,25 @@
     <meta charset="UTF-8">
     <title>Register</title>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet">
-    <link rel="stylesheet" href="/resources/auth/style.css">
-    <link rel="icon" type="image/x-icon" href="/resources/icons/Ll.ico">
-
+    <link rel="stylesheet" href="resources/auth/style.css">
+    <link rel="icon" type="image/x-icon" href="resources/icons/Ll.ico">
+    <link rel="stylesheet" href="resources/auth/messages/style.css">
+    <link rel="stylesheet" href="resources/auth/loading/style.css">
 </head>
 <body class="align">
 
+<div id="Error" class="fade alert-simple alert-danger text--center hidden" role="alert" data-brk-library="component__alert">
+    <strong class="font__weight-semibold">
+        Oh snap!
+        <br>
+        <span id="errorMessage">Your password must contain 8 characters.</span>
+    </strong>
+</div>
+
 <div class="grid">
     <h1>Low Latency</h1>
+    <h2>Register</h2>
+
     <form id="register-form" method="POST" class="form login">
 
         <div class="form__field">
@@ -34,11 +45,15 @@
                    required>
         </div>
 
-        <div class="h-captcha" data-sitekey="5aa25af8-05c6-4b6c-ab92-780a9810ee16" data-theme="dark"></div>
+        <div id="captchaContainer" class="h-captcha" data-sitekey="5aa25af8-05c6-4b6c-ab92-780a9810ee16" data-theme="dark"></div>
 
 
         <div class="form__field">
             <input type="submit" value="Register">
+        </div>
+        <div class="loading-container hidden">
+            <div class="loading"></div>
+            <div id="loading-text">loading</div>
         </div>
 
 
@@ -80,10 +95,12 @@
 <script>
 
 </script>
+<script src="resources/auth/loading/loading.js"></script>
+<script src="resources/auth/redirect/redirect.js"></script>
+<script src="resources/js/unauth-session.js"></script>
+<script src="resources/auth/auth.js"></script>
+<script src="resources/auth/register.js"></script>
 
-<script src="/resources/js/unauth-session.js"></script>
-<script src="/resources/auth/auth.js"></script>
-<script src="/resources/auth/register.js"></script>
 
 
 <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
