@@ -71,6 +71,7 @@
 * {
   -webkit-box-sizing: inherit;
           box-sizing: inherit;
+
 }
 
 html {
@@ -85,8 +86,7 @@ body {
   background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
   overflow: hidden;
   color: var(--bodyColor);
-  font-family: "Open Sans", sans-serif;
-  font-family: var(--bodyFontFamily), var(--bodyFontFamilyFallback);
+  font-family: "runescape","Open Sans", sans-serif;
   font-size: 0.875rem;
   font-size: var(--bodyFontSize);
   font-weight: 400;
@@ -209,6 +209,7 @@ input[type="submit"] {
   background-color: var(--loginInputBackgroundColor);
   border-bottom-left-radius: 0;
   border-top-left-radius: 0;
+  font-size: 1.5em;
 }
 
 .login input[type="password"]:focus,
@@ -239,6 +240,7 @@ input[type="submit"] {
 p {
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
+  font-size: 2em;
 }
 
 .text--center {
@@ -256,9 +258,17 @@ CSS Edits
 h1{
   text-align: center;
   color: #008cd7;
-  font-size: 3em;
+  font-size: 4em;
   font-weight: 300;
 }
+
+h2{
+  text-align: center;
+  color: #ffffff;
+  font-weight: 300;
+}
+
+
 
 
 svg .icon{
