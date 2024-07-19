@@ -108,7 +108,6 @@ function getActivityImagePath(activity_name) {
         console.log(`${activity_name} not in activities.`)
         return ""
     }
-
 }
 
 
