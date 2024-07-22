@@ -11,6 +11,7 @@ import (
 	"github.com/connect-web/storageself/postgres"
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/session"
+	"github.com/gofiber/template/html/v2"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"log"
 	"os"
@@ -58,14 +59,16 @@ func main() {
 		})
 	auth.UserSessionStore = session.New(session.Config{Storage: store})
 
-	//engine := html.New("../../templates", ".html")
+	engine := html.New("../../templates", ".html")
+
+	// Create a new Fiber app with the HTML engine
 	app := fiber.New(fiber.Config{
-		//Views: engine
+		Views: engine,
 	})
 
 	// Setup middleware for all Routers
 	middleware.Run(app)
-	//templates.Run(app)
+	// templates.Run(app) // templates not used yet
 
 	// Setup API's
 	api_routes := app.Group("/api")
@@ -89,7 +92,7 @@ func RegisterStatic(app *fiber.App) {
 	staticType := fiber.Static{Index: "home"}
 	if front_end {
 		// Only cache and Compress outside of development.
-		staticType.CacheDuration = 30 * time.Minute
+		staticType.CacheDuration = 0 * time.Minute
 		staticType.Compress = true
 	}
 
