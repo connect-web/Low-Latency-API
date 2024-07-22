@@ -1,6 +1,7 @@
 package ml
 
 import (
+	"encoding/json"
 	"errors"
 	"github.com/connect-web/Low-Latency-API/internal/db"
 	"github.com/connect-web/Low-Latency-API/internal/db/Scanner"
@@ -9,11 +10,12 @@ import (
 )
 
 var MINIGAME_TOPLIST_QUERY = `
-SELECT activity, count(distinct playerid)
-FROM ML.results
-WHERE activitytype = 'minigames'
-GROUP BY activity
-ORDER BY count(distinct playerid) desc;
+SELECT r.activity, count(distinct r.playerid), m.metrics
+FROM ML.results r
+LEFT JOIN ml.metrics m on m.activity = r.activity
+WHERE r.activitytype = 'minigames'
+GROUP BY r.activity, m.metrics
+ORDER BY count(distinct r.playerid) desc;
 `
 
 var MINIGAME_TOPLIST_USER_QUERY = `
@@ -60,7 +62,12 @@ func QueryMinigameToplist() ([]model.MinigameToplist, error) {
 
 	for rows.Next() {
 		row := model.MinigameToplist{}
-		if err := rows.Scan(&row.Minigame, &row.Count); err == nil {
+		var metrics []byte
+		if err := rows.Scan(&row.Minigame, &row.Count, &metrics); err == nil {
+			metricErr := json.Unmarshal(metrics, &row.Metrics)
+			if metricErr != nil {
+				log.Printf("Failed to unmarshal metrics: %s\n", metricErr.Error())
+			}
 			results = append(results, row)
 		}
 	}
