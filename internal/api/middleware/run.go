@@ -1,11 +1,9 @@
 package middleware
 
 import (
-	"crypto/rand"
-	"encoding/base64"
 	"fmt"
+	"github.com/connect-web/Low-Latency-API/internal/util"
 	"github.com/gofiber/fiber/v3"
-	"github.com/gofiber/fiber/v3/log"
 	"github.com/gofiber/fiber/v3/middleware/compress"
 	"github.com/gofiber/fiber/v3/middleware/logger"
 )
@@ -21,9 +19,6 @@ func Run(app *fiber.App) {
 		Level: compress.LevelBestSpeed, // or compress.LevelBestCompression
 	}))
 
-	// Content-Security-Policy
-	app.Use(setCSP())
-
 	// Use Helmet middleware with custom CSP
 	/*
 		app.Use(helmet.New(helmet.Config{
@@ -32,26 +27,28 @@ func Run(app *fiber.App) {
 	*/
 }
 
-// GenerateNonce generates a random nonce for each request
-func GenerateNonce() string {
-	nonce := make([]byte, 16)
-	_, err := rand.Read(nonce)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return base64.StdEncoding.EncodeToString(nonce)
-}
-
-func setCSP() fiber.Handler {
+func NonceAndCSPMiddleware() fiber.Handler {
 	return func(c fiber.Ctx) error {
+		// Generate the nonce
+		fmt.Println("Creating nonce.")
+		nonce, err := util.GenerateNonce()
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).SendString("Internal Server Error")
+		}
+		fmt.Printf("Nonce set: '%s'\n", nonce)
+		c.Locals("nonce", nonce)
+
+		// Set the CSP headers
+		fmt.Println("Fetching nonce.")
 		c.Set("Content-Security-Policy", fmt.Sprintf(
 			"default-src 'self'; "+
-				"script-src 'self' https://hcaptcha.com https://*.hcaptcha.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; "+
-				"style-src 'self' https://hcaptcha.com https://*.hcaptcha.com https://fonts.googleapis.com https://cdn.jsdelivr.net; "+
+				"script-src 'self' 'nonce-%[1]s' https://*.hcaptcha.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; "+
+				"style-src 'self' 'nonce-%[1]s' https://*.hcaptcha.com https://fonts.googleapis.com https://cdn.jsdelivr.net; "+
 				"img-src 'self' https://*.hcaptcha.com https://cdnjs.cloudflare.com; "+
 				"font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; "+
 				"frame-src 'self' https://hcaptcha.com https://*.hcaptcha.com; "+
 				"connect-src 'self' https://hcaptcha.com https://*.hcaptcha.com",
+			nonce,
 		))
 		return c.Next()
 	}
