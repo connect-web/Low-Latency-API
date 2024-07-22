@@ -72,7 +72,7 @@ var activities = {
     "Clue Scrolls (elite)": "/activities/external/clue_scroll_elite",
     "Clue Scrolls (master)": "/activities/external/clue_scroll_master",
     "Lunar Chests": "/activities/external/lunar_chest",
-
+    "Sol Heredit": "/activities/sol_heredit",
 
     "Bounty Hunter - Hunter": "/activities/bounty_hunter_hunter",
     "Bounty Hunter - Rogue": "/activities/bounty_hunter_rogue",
