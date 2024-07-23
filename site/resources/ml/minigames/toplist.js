@@ -23,17 +23,17 @@ document.addEventListener('DOMContentLoaded', function() {
         const row = document.createElement('tr');
         row.dataset.attrId = item.minigame;
 
-        // Minigame name cell
-        const minigameCell = document.createElement('td');
-        minigameCell.className = 'px-3 pt-0 pb-3 border-b border-gray-200 dark:border-gray-800 minigame-toplist-image';
-        minigameCell.innerHTML = `${getMinigameImage(item.minigame)}`;;
-        row.appendChild(minigameCell);
-
-        // Count cell
+        // Player Count cell
         const countCell = document.createElement('td');
         countCell.className = 'font-normal px-3 pt-0 pb-3 border-b border-gray-200 dark:border-gray-800';
         countCell.textContent = item.count;
         row.appendChild(countCell);
+
+        // Mean Accuracy cell
+        const accuracyCell = document.createElement('td');
+        accuracyCell.className = 'font-normal px-3 pt-0 pb-3 border-b border-gray-200 dark:border-gray-800';
+        accuracyCell.textContent = item.Metrics['Mean Accuracy'].toFixed(3); // Format to 3 decimal places
+        row.appendChild(accuracyCell);
 
         // View cell
         const viewCell = document.createElement('td');
@@ -50,6 +50,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         viewCell.appendChild(viewButton);
         row.appendChild(viewCell);
+
+        // Minigame name cell
+        const minigameCell = document.createElement('td');
+        minigameCell.className = 'px-3 pt-0 pb-3 border-b border-gray-200 dark:border-gray-800 minigame-toplist-image';
+        minigameCell.innerHTML = `${getMinigameImage(item.minigame)}`;
+        row.appendChild(minigameCell);
 
         return row;
     }
