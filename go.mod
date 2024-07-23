@@ -12,6 +12,7 @@ require (
 )
 
 require (
+	github.com/gofiber/storage/memory v1.3.4 // indirect
 	github.com/gofiber/template v1.8.3 // indirect
 	github.com/gofiber/template/html/v2 v2.1.2 // indirect
 	github.com/gofiber/utils v1.1.0 // indirect
