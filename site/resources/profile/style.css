@@ -20,6 +20,8 @@ Use a better box model (opinionated).
 *,
 *::before,
 *::after {
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
 }
 
@@ -54,6 +56,8 @@ Remove the margin in all browsers.
 
 body {
     margin: 0;
+    padding: 0;
+    overflow: hidden;
 }
 
 /**
@@ -575,6 +579,7 @@ video {
 .bg-gray-100 {
     --tw-bg-opacity: 1;
     background-color: rgba(244, 244, 245, var(--tw-bg-opacity));
+    height: 100vh; /* Use the full viewport height */
 }
 
 .bg-yellow-100 {
@@ -711,6 +716,9 @@ video {
 
 .table {
     display: table;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
 }
 
 .hidden {
@@ -735,6 +743,7 @@ video {
 
 .flex-grow {
     flex-grow: 1;
+    overflow-y: auto;
 }
 
 .flex-shrink-0 {
@@ -1544,4 +1553,28 @@ textarea:hover, textarea:active, textarea:focus {
 .Username {
     color: white;
     font-weight: bold;
+}
+
+
+
+.Toplist, .PlayersTable {
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    width: auto;
+}
+
+/* Handle dark mode */
+@media (prefers-color-scheme: dark) {
+    .dark\:bg-gray-900 {
+        background-color: #1a1a1a;
+    }
+
+    .dark\:text-white {
+        color: #ffffff;
+    }
+
+    .dark\:border-gray-800 {
+        border-color: #333;
+    }
 }
