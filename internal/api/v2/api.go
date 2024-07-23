@@ -20,7 +20,7 @@ func RegisterRouter(api fiber.Router) {
 		Storage:    cacheStorage,
 		Next: func(c fiber.Ctx) bool {
 			// Skip caching for the /user/profile route
-			return c.Path() == "/api/v2/user/profile"
+			return c.Path() == "/api/v2/user/profile" || c.Path() == "/global-stats"
 		},
 	})
 	api.Use(customCacheMiddleware)
