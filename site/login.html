@@ -6,18 +6,13 @@
     <link  href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet">
     <link  rel="stylesheet" href="resources/css/fonts.css">
     <link  rel="stylesheet" href="resources/auth/style.css">
-    <link rel="stylesheet" href="resources/home/background/style.css">
+    <link rel="stylesheet" href="resources/auth/background_stars/style.css">
     <link  rel="icon" type="image/x-icon" href="resources/icons/Ll.ico">
     <link rel="stylesheet" href="resources/auth/messages/style.css">
  <link rel="stylesheet" href="resources/auth/loading/style.css">
 
 
 </head>
-
-
-
-<!-- partial:index.partial.html -->
-<body class="align">
 
 <div id="Error" class="fade alert-simple alert-danger text--center hidden" role="alert" data-brk-library="component__alert">
     <strong class="font__weight-semibold">
@@ -27,54 +22,69 @@
     </strong>
 </div>
 
+<body>
 
-<div class="grid">
+<div id="stars"></div>
+<div id="stars2"></div>
+<div id="stars3"></div>
+<div class="login-container">
+    <div id="content title" class="align">
+
+        <div class="grid">
+            <h1>Low Latency</h1>
+            <h2>Login</h2>
+
+            <form id="loginForm" class="form login" action="./api/login">
+
+                <div class="form__field">
+                    <label for="login__username">
+                        <svg width="25px" height="25px" fill="#FFFFFF">
+                            <use xlink:href="#icon-user"></use>
+                        </svg>
+                        <span class="hidden">Username</span></label>
+                    <input autocomplete="username" id="login__username" type="text" name="username" class="form__input"
+                           placeholder="Username" required>
+                </div>
+
+                <div class="form__field">
+                    <label for="login__password">
+                        <svg width="25px" height="25px" fill="#FFFFFF">
+                            <use xlink:href="#icon-lock"></use>
+                        </svg>
+                        <span class="hidden">Password</span></label>
+                    <input id="login__password" type="password" name="password" class="form__input" placeholder="Password"
+                           required>
+                </div>
+                <div id="captchaContainer" class="h-captcha" data-sitekey="5aa25af8-05c6-4b6c-ab92-780a9810ee16" data-theme="dark"></div>
+
+                <div class="form__field">
+                    <input type="submit" value="Sign In">
+                </div>
+                <div class="loading-container">
+                    <div class="loading"></div>
+                    <div id="loading-text">loading</div>
+                </div>
 
 
-    <h1>Low Latency</h1>
-    <h2>Login</h2>
+            </form>
 
-    <form id="loginForm" class="form login" action="./api/login">
-
-        <div class="form__field">
-            <label for="login__username">
-                <svg width="25px" height="25px" fill="#FFFFFF">
-                    <use xlink:href="#icon-user"></use>
+            <p class="text--center">Not a member? <a href="./register">Sign up now</a>
+                <svg class="icon">
+                    <use xlink:href="#icon-arrow-right"></use>
                 </svg>
-                <span class="hidden">Username</span></label>
-            <input autocomplete="username" id="login__username" type="text" name="username" class="form__input"
-                   placeholder="Username" required>
+            </p>
+
         </div>
-
-        <div class="form__field">
-            <label for="login__password">
-                <svg width="25px" height="25px" fill="#FFFFFF">
-                    <use xlink:href="#icon-lock"></use>
-                </svg>
-                <span class="hidden">Password</span></label>
-            <input id="login__password" type="password" name="password" class="form__input" placeholder="Password"
-                   required>
-        </div>
-        <div id="captchaContainer" class="h-captcha" data-sitekey="5aa25af8-05c6-4b6c-ab92-780a9810ee16" data-theme="dark"></div>
-
-        <div class="form__field">
-            <input type="submit" value="Sign In">
-        </div>
-        <div class="loading-container">
-            <div class="loading"></div>
-            <div id="loading-text">loading</div>
-        </div>
+        <!-- Any other content like login forms can be added here -->
 
 
-    </form>
 
-    <p class="text--center">Not a member? <a href="./register">Sign up now</a>
-        <svg class="icon">
-            <use xlink:href="#icon-arrow-right"></use>
-        </svg>
-    </p>
 
+
+    </div>
 </div>
+
+
 
 <svg xmlns="http://www.w3.org/2000/svg" class="icons">
     <svg style="display: none;">
@@ -104,13 +114,14 @@
     </svg>
 </svg>
 
-<script>
-
-
-</script>
 </body>
+
+
+
+
 <script src="resources/auth/loading/loading.js"></script>
 <script src="resources/auth/redirect/redirect.js"></script>
+<script src="resources/auth/background_stars/stars.js"></script>
 <script  src="resources/js/unauth-session.js"></script>
 <script  src="resources/auth/auth.js"></script>
 <script  src="resources/auth/login.js"></script>
