@@ -6,9 +6,25 @@ import (
 	"github.com/connect-web/Low-Latency-API/internal/api/v2/profile"
 	"github.com/connect-web/Low-Latency-API/internal/api/v2/public"
 	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/middleware/cache"
+	"github.com/gofiber/storage/memory"
+	"time"
 )
 
 func RegisterRouter(api fiber.Router) {
+	cacheStorage := memory.New()
+
+	// Define custom cache middleware
+	customCacheMiddleware := cache.New(cache.Config{
+		Expiration: 24 * 7 * time.Hour,
+		Storage:    cacheStorage,
+		Next: func(c fiber.Ctx) bool {
+			// Skip caching for the /user/profile route
+			return c.Path() == "/api/v2/user/profile"
+		},
+	})
+	api.Use(customCacheMiddleware)
+
 	publicRoute := api.Group("/public")
 
 	publicRoute.Get("/skill-toplist", public.GetSkillToplist)
