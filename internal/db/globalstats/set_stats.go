@@ -1,4 +1,4 @@
-package globalStats
+package globalstats
 
 import (
 	"errors"

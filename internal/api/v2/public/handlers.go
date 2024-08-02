@@ -61,14 +61,13 @@ func GetMinigameToplist(c fiber.Ctx) error {
 }
 
 func GetMinigameToplistUsers(c fiber.Ctx) error {
-	string_skill := c.Query("minigame") // this should be converted to an ID
-
-	valid := util.ValidMinigame(string_skill)
-	if !valid {
+	string_skill := c.Query("minigame-id")
+	minigame_id, err := strconv.Atoi(string_skill)
+	if err != nil {
 		return util.InternalServerError(c)
 	}
 
-	players, err := QueryMinigameToplistUsers(string_skill)
+	players, err := QueryMinigameToplistUsers(minigame_id)
 	if err != nil {
 		return util.InternalServerError(c)
 	}

@@ -3,7 +3,7 @@ package public
 import (
 	"errors"
 	"github.com/connect-web/Low-Latency-API/internal/db"
-	"github.com/connect-web/Low-Latency-API/internal/db/Scanner"
+	"github.com/connect-web/Low-Latency-API/internal/db/loadrow"
 	"github.com/connect-web/Low-Latency-API/internal/model"
 	"github.com/lib/pq"
 	"log"
@@ -13,14 +13,13 @@ var SKILLER_TOPLIST_QUERY = `
 select 
     id, skills, amount
 from grouped.skillers
-ORDER BY amount DESC
-LIMIT 100;
+ORDER BY amount DESC;
 `
 
 var SKILLER_TOPLIST_USERS_QUERY = `
 SELECT
     p.name,
-    COALESCE(pls.combat_level, 0), COALESCE(pls.overall, 0), COALESCE(pls.total_level, 0),
+    COALESCE(pls.combat_level, 3), COALESCE(pls.overall, 0), COALESCE(pls.total_level, 23),
     pl.skills_experience, pl.skills_ratio, pl.skills_levels, pl.minigames,
     pg.skills_experience, pg.skills_ratio, pg.minigames
 
@@ -88,7 +87,7 @@ func QuerySkillToplistUsers(skillId int) ([]model.Player, error) {
 	}
 	defer rows.Close()
 
-	results, err := Scanner.ScanPlayerRows(rows)
+	results, err := loadrow.Player(rows)
 
 	return results, err
 }

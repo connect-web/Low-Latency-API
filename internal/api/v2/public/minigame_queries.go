@@ -3,38 +3,40 @@ package public
 import (
 	"errors"
 	"github.com/connect-web/Low-Latency-API/internal/db"
-	"github.com/connect-web/Low-Latency-API/internal/db/Scanner"
+	"github.com/connect-web/Low-Latency-API/internal/db/loadrow"
 	"github.com/connect-web/Low-Latency-API/internal/model"
+	"github.com/lib/pq"
 	"log"
 )
 
 var MINIGAME_TOPLIST_QUERY = `
-SELECT 
-	minigame, 
-	COUNT(DISTINCT id) AS count
-FROM stats.minigame_links
-GROUP BY minigame
-ORDER BY count DESC;
+select 
+    id, activities, amount
+from grouped.minigames
+ORDER BY amount DESC;
+`
+var MINIGAME_TOPLIST_USER_QUERY = `
+SELECT
+    p.name,
+    COALESCE(pls.combat_level, 3), COALESCE(pls.overall, 0), COALESCE(pls.total_level, 23),
+    pl.skills_experience, pl.skills_ratio, pl.skills_levels, pl.minigames,
+    pg.skills_experience, pg.skills_ratio, pg.minigames
+
+FROM player_gains pg
+LEFT JOIN PLAYERS P on p.id = pg.playerid
+LEFT JOIN player_live pl on pl.playerid = pg.playerid
+LEFT JOIN player_live_stats pls on pls.playerid = pg.playerid
+WHERE
+    pg.playerid = ANY(
+    select
+        unnest(s.playerids)
+    from grouped.minigames s
+    where id = $1
+    );
 `
 
-var MINIGAME_TOPLIST_USER_QUERY = `
-	SELECT
-		p.name,
-		pls.combat_level, pls.overall, pls.total_level,
-		pl.skills_experience, pl.skills_ratio, pl.skills_levels, pl.minigames,
-		pg.skills_experience, pg.skills_ratio, pg.minigames
-	FROM stats.minigame_links links
-	LEFT JOIN PLAYERS P on p.id = links.id
-	LEFT JOIN player_live pl on pl.playerid = links.id
-	LEFT JOIN player_live_stats pls on pls.playerid = links.id
-	LEFT JOIN player_gains pg on pg.playerid = links.id
-	WHERE 
-	    links.MINIGAME = $1
-	ORDER BY links DESC;
-	`
-
-func QueryMinigameToplist() ([]model.MinigameToplist, error) {
-	results := []model.MinigameToplist{}
+func QueryMinigameToplist() ([]model.SkillToplist, error) {
+	results := []model.SkillToplist{}
 	client := db.NewDBClient()
 	if connectErr := client.Connect(); connectErr != nil {
 		log.Println(connectErr.Error())
@@ -54,15 +56,16 @@ func QueryMinigameToplist() ([]model.MinigameToplist, error) {
 	defer rows.Close()
 
 	for rows.Next() {
-		row := model.MinigameToplist{}
-		if err := rows.Scan(&row.Minigame, &row.Count); err == nil {
-			results = append(results, row)
+		entry := model.SkillToplist{}
+		scanErr := rows.Scan(&entry.Id, pq.Array(&entry.Skills), &entry.Count)
+		if scanErr == nil {
+			results = append(results, entry)
 		}
 	}
 	return results, nil
 }
 
-func QueryMinigameToplistUsers(minigame string) ([]model.Player, error) {
+func QueryMinigameToplistUsers(minigame int) ([]model.Player, error) {
 	results := []model.Player{}
 
 	client := db.NewDBClient()
@@ -83,6 +86,6 @@ func QueryMinigameToplistUsers(minigame string) ([]model.Player, error) {
 	}
 	defer rows.Close()
 
-	results, err := Scanner.ScanPlayerRows(rows)
+	results, err := loadrow.Player(rows)
 	return results, err
 }

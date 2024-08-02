@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/connect-web/Low-Latency-API/internal/db"
-	"github.com/connect-web/Low-Latency-API/internal/db/Scanner"
+	"github.com/connect-web/Low-Latency-API/internal/db/loadrow"
 	"github.com/connect-web/Low-Latency-API/internal/model"
 	"log"
 )
@@ -94,7 +94,6 @@ func QueryMinigameToplistUsers(minigame string) ([]model.Player, error) {
 		return results, errors.New("Internal server error")
 	}
 	defer rows.Close()
-
-	results, err := Scanner.ScanPlayerRows(rows)
+	results, err := loadrow.Player(rows)
 	return results, err
 }
