@@ -1,25 +1,28 @@
-package Scanner
+package loadrow
 
 import (
 	"database/sql"
+	"fmt"
 	"github.com/connect-web/Low-Latency-API/internal/model"
 	"github.com/connect-web/Low-Latency-API/internal/util"
+	"strconv"
 )
 
-func ScanPlayerRows(rows *sql.Rows) ([]model.Player, error) {
+func Player(rows *sql.Rows) ([]model.Player, error) {
 	var results []model.Player
 
 	for rows.Next() {
 		entry := model.Player{}
-		var skills, skillRatios, skillLevels, minigames, skillGains, skillGainsRatio, minigameGains []byte
+		var skills, skillRatios, combatLevel, TotalExperience, TotalLevel, skillLevels, minigames, skillGains, skillGainsRatio, minigameGains []byte
 
 		scanErr := rows.Scan(
 			&entry.Username,
-			&entry.CombatLevel, &entry.TotalExperience, &entry.TotalLevel,
+			&combatLevel, &TotalExperience, &TotalLevel,
 			&skills, &skillRatios, &skillLevels, &minigames,
 			&skillGains, &skillGainsRatio, &minigameGains,
 		)
 		if scanErr != nil {
+			fmt.Printf("Player scan: %s\n", scanErr.Error())
 			return nil, scanErr
 		}
 
@@ -33,10 +36,29 @@ func ScanPlayerRows(rows *sql.Rows) ([]model.Player, error) {
 		entry.SkillGainsRatio = util.DecodeJSONToFloat64Map(skillGainsRatio)
 		entry.MinigameGains = util.DecodeJSONToFloat64Map(minigameGains)
 
+		entry.CombatLevel = 3
+		byteToInt, err := strconv.Atoi(string(combatLevel))
+		if err == nil {
+			entry.CombatLevel = byteToInt
+		}
+
+		entry.TotalExperience = 0
+		byteToIntExp, err := strconv.ParseInt(string(TotalExperience), 10, 64)
+		if err == nil {
+			entry.TotalExperience = byteToIntExp
+		}
+
+		entry.CombatLevel = 3
+		byteToIntTotalLvl, err := strconv.Atoi(string(TotalLevel))
+		if err == nil {
+			entry.TotalLevel = byteToIntTotalLvl
+		}
+
 		results = append(results, entry)
 	}
 
 	if err := rows.Err(); err != nil {
+		fmt.Printf("Player: %s\n", err.Error())
 		return nil, err
 	}
 
