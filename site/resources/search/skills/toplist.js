@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
             skillsContainer.innerHTML += `${getSkillImage(skill)}`;
         });
         skillsCell.appendChild(skillsContainer);
-        row.appendChild(skillsCell);
+
 
         // Player count cell
         const countCell = document.createElement('td');
@@ -61,6 +61,8 @@ document.addEventListener('DOMContentLoaded', function() {
         viewCell.appendChild(viewButton);
         row.appendChild(viewCell);
 
+        // add skills last
+        row.appendChild(skillsCell);
         return row;
     }
 

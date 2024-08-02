@@ -12,7 +12,7 @@ let totalExpMin = 0, totalExpMax = 10000000000;
 
 async function fetchPlayersData(minigame) {
     try {
-        const response = await fetch(`/api/v2/public/boss-minigame-toplist-users?minigame=${minigame}`);
+        const response = await fetch(`/api/v2/public/boss-minigame-toplist-users?minigame-id=${minigame}`);
         const jsonData = await response.json();
         playersData = jsonData;
 

@@ -18,18 +18,22 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Create table row for toplist
     function createToplistRow(item) {
         const row = document.createElement('tr');
-        row.dataset.attrId = item.minigame;
+        row.dataset.attrId = item.id;
 
-        // Minigame name cell
-        const minigameCell = document.createElement('td');
-        minigameCell.className = 'px-3 pt-0 pb-3 border-b border-gray-200 dark:border-gray-800 minigame-toplist-image';
-        minigameCell.innerHTML = `${getMinigameImage(item.minigame)}`;;
-        row.appendChild(minigameCell);
+        // Skills cell
+        const skillsCell = document.createElement('td');
+        skillsCell.className = 'font-normal px-3 pt-0 pb-3 border-b border-gray-200 dark:border-gray-800';
+        const skillsContainer = document.createElement('div');
+        skillsContainer.className = 'skills-container';
+        item.skills.forEach(skill => {
+            skillsContainer.innerHTML += `${getMinigameImage(skill)}`;
+        });
+        skillsCell.appendChild(skillsContainer);
 
-        // Count cell
+
+        // Player count cell
         const countCell = document.createElement('td');
         countCell.className = 'font-normal px-3 pt-0 pb-3 border-b border-gray-200 dark:border-gray-800';
         countCell.textContent = item.count;
@@ -43,13 +47,19 @@ document.addEventListener('DOMContentLoaded', function() {
         viewButton.textContent = 'View';
         viewButton.addEventListener('click', () => {
             skillDetails = {
-                skills: [item.minigame],
+                id: item.id,
+                skills: item.skills,
                 count: item.count,
             }
-            fetchPlayersData(item.minigame);
+
+            fetchPlayersData(item.id);
+
         });
         viewCell.appendChild(viewButton);
         row.appendChild(viewCell);
+
+        // add minigames last
+        row.appendChild(skillsCell);
 
         return row;
     }

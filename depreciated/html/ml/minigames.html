@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Search</title>
-    <link rel="stylesheet" href="../resources/profile/style.css">
-    <link rel="stylesheet" href="../resources/css/skill-images.css">
-    <link rel="stylesheet" href="../resources/search/filters.css">
+    <link rel="stylesheet" href="../../../site/resources/profile/style.css">
+    <link rel="stylesheet" href="../../../site/resources/css/skill-images.css">
+    <link rel="stylesheet" href="../../../site/resources/search/filters.css">
 </head>
 <body>
 <!-- partial:index.partial.html -->
@@ -16,8 +16,8 @@
         <div class="h-16 flex w-full border-b border-gray-200 dark:border-gray-800 px-10 p-3">
             <div class="flex h-full text-gray-600 dark:text-gray-400 sticky top-0">
                 <a href="/profile" class="cursor-pointer h-full border-b-2 border-transparent inline-flex items-center mr-8">Profile</a>
-                <a href="/search/skills" class="cursor-pointer h-full border-b-2 border-blue-500 text-blue-500 dark:text-white dark:border-white inline-flex mr-8 items-center">Search</a>
-                <a href="/ml/skills" class="cursor-pointer h-full border-b-2 border-transparent inline-flex items-center mr-8">Machine Learning (Top 1K)</a>
+                <a href="/search/skills" class="cursor-pointer h-full border-b-2 border-transparent inline-flex items-center mr-8">Search</a>
+                <a href="/ml/skills" class="cursor-pointer h-full border-b-2 border-blue-500 text-blue-500 dark:text-white dark:border-white inline-flex mr-8 items-center">Machine Learning (Top 1K)</a>
             </div>
             <div class="ml-auto flex items-center space-x-7">
                 <button class="flex items-center">
@@ -36,7 +36,7 @@
                 <div class="sm:px-7 sm:pt-7 px-4 pt-4 flex flex-col w-full border-b border-gray-200 bg-white dark:bg-gray-900 dark:text-white dark:border-gray-800">
                     <div class="flex w-full items-center">
                         <div class="flex items-center text-3xl text-gray-900 dark:text-white">
-                            Top daily earned XP Hiscores!
+                            Top daily earned Minigame score & Boss KC Hiscores!
                         </div>
                         <div class="ml-auto sm:flex hidden items-center justify-end">
                             <div class="text-right">
@@ -46,10 +46,10 @@
                         </div>
                     </div>
                     <div class="flex items-center space-x-3 sm:mt-7 mt-4">
-                        <a href="/search/skills"
-                           class="px-3 border-b-2 border-blue-500 text-blue-500 dark:text-white dark:border-white pb-1.5">Skills</a>
-                        <a href="/search/minigames"
-                           class="px-3 border-b-2 border-transparent text-gray-600 dark:text-gray-400 pb-1.5 sm:block hidden">Minigame
+                        <a href="/ml/skills"
+                           class="px-3 border-b-2 border-transparent text-gray-600 dark:text-gray-400 pb-1.5 sm:block hidden">Skills</a>
+                        <a href="/ml/minigames"
+                           class="px-3 border-b-2 border-blue-500 text-blue-500 dark:text-white dark:border-white pb-1.5">Minigame
                             & Bosses</a>
                     </div>
                 </div>
@@ -63,9 +63,11 @@
                         <table class="w-full text-left" id="toplist-table">
                             <thead>
                             <tr class="text-gray-400">
-                                <th class="font-normal px-3 pt-0 pb-3 border-b border-gray-200 dark:border-gray-800">Isolated skills gained</th>
+
                                 <th class="font-normal px-3 pt-0 pb-3 border-b border-gray-200 dark:border-gray-800">Player Count</th>
+                                <th class="font-normal px-3 pt-0 pb-3 border-b border-gray-200 dark:border-gray-800">Mean Accuracy</th>
                                 <th class="font-normal px-3 pt-0 pb-3 border-b border-gray-200 dark:border-gray-800">View</th>
+                                <th class="font-normal px-3 pt-0 pb-3 border-b border-gray-200 dark:border-gray-800">Isolated minigames gained</th>
                             </tr>
                             </thead>
                             <tbody class="text-gray-600 dark:text-gray-100">
@@ -158,8 +160,8 @@
                                 <th class="font-normal px-3 pt-0 pb-3 border-b border-gray-200 dark:border-gray-800">Total Experience</th>
                                 <th class="font-normal px-3 pt-0 pb-3 border-b border-gray-200 dark:border-gray-800">Skill Levels</th>
                                 <th class="font-normal px-3 pt-0 pb-3 border-b border-gray-200 dark:border-gray-800">Minigames</th>
-                                <th class="font-normal px-3 pt-0 pb-3 border-b border-gray-200 dark:border-gray-800">Skill Gains</th>
-                                <th class="font-normal px-3 pt-0 pb-3 border-b border-gray-200 dark:border-gray-800">Minigame Gains</th>
+                                <th class="font-normal px-3 pt-0 pb-3 border-b border-gray-200 dark:border-gray-800">Skill Gains (daily average)</th>
+                                <th class="font-normal px-3 pt-0 pb-3 border-b border-gray-200 dark:border-gray-800">Minigame Gains (daily average)</th>
                             </tr>
                             </thead>
                             <tbody class="text-gray-600 dark:text-gray-100">
@@ -196,13 +198,12 @@
     </div>
 </div>
 <!-- partial -->
-
-<script src="../resources/profile/scripts/request.js"></script>
-<script src="../resources/profile/scripts/profile.js"></script>
-<script src="../resources/profile/scripts/ban-count.js"></script>
-<script src="../resources/search/image-loader.js"></script>
-<script src="../resources/search/skills/players.js"></script>
-<script src="../resources/search/skills/toplist.js"></script>
+<script src="../../../site/resources/profile/scripts/request.js"></script>
+<script src="../../../site/resources/profile/scripts/profile.js"></script>
+<script src="../../../site/resources/profile/scripts/ban-count.js"></script>
+<script src="../../../site/resources/search/image-loader.js"></script>
+<script src="../../../site/resources/ml/minigames/players.js"></script>
+<script src="../../../site/resources/ml/minigames/toplist.js"></script>
 
 
 </body>
