@@ -18,6 +18,10 @@ func RegisterRouter(api fiber.Router) {
 	customCacheMiddleware := cache.New(cache.Config{
 		Expiration: 24 * 7 * time.Hour,
 		Storage:    cacheStorage,
+		KeyGenerator: func(c fiber.Ctx) string {
+			// Use path and query params to generate the cache key
+			return c.Path() + "?" + c.OriginalURL()
+		},
 		Next: func(c fiber.Ctx) bool {
 			// Skip caching for the /user/profile route
 			return c.Path() == "/api/v2/user/profile" || c.Path() == "/global-stats"
