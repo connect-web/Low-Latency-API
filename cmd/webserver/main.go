@@ -7,6 +7,7 @@ import (
 	"github.com/connect-web/Low-Latency-API/internal/api"
 	"github.com/connect-web/Low-Latency-API/internal/api/auth"
 	"github.com/connect-web/Low-Latency-API/internal/api/middleware"
+	"github.com/connect-web/Low-Latency-API/internal/api/templates"
 	"github.com/connect-web/Low-Latency-API/internal/db"
 	"github.com/connect-web/Low-Latency-API/internal/db/globalStats"
 	"github.com/connect-web/Low-Latency-API/internal/model"
@@ -39,7 +40,7 @@ func listRoutes(app *fiber.App) {
 }
 
 func main() {
-	go globalStats.GlobalStatsWorker() // starts a worker that periodically updates the global ban count statistics
+	go globalstats.GlobalStatsWorker() // starts a worker that periodically updates the global ban count statistics
 
 	config, err := pgxpool.ParseConfig(db.GetUrl())
 
@@ -87,6 +88,7 @@ func main() {
 	api.CreateRouter(api_routes)
 
 	// Setup Static files
+	templates.CreateTemplates(app)
 	RegisterStatic(app)
 
 	// Display environment, Dev / Server
