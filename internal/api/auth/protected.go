@@ -9,7 +9,7 @@ import (
 func Protected(c fiber.Ctx) error {
 	username, err := GetUsername(c)
 	if err != nil {
-		return util.InternalServerError(c)
+		return util.Unauthorized(c)
 	}
 	if username == "" {
 		return util.Unauthorized(c)
