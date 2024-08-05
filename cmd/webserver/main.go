@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"github.com/connect-web/Low-Latency-API/internal/api"
 	"github.com/connect-web/Low-Latency-API/internal/api/auth"
@@ -10,9 +9,8 @@ import (
 	"github.com/connect-web/Low-Latency-API/internal/api/templates"
 	"github.com/connect-web/Low-Latency-API/internal/db"
 	"github.com/connect-web/Low-Latency-API/internal/db/globalStats"
-	"github.com/connect-web/Low-Latency-API/internal/model"
-	"github.com/connect-web/Low-Latency-API/internal/util"
 	"github.com/connect-web/storageself/postgres"
+	json "github.com/goccy/go-json"
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/session"
 	"github.com/gofiber/storage/memory"
@@ -27,7 +25,9 @@ var (
 	envVar        = os.Getenv("siteonline")
 	certDirectory = os.Getenv("certDir")
 	front_end     = envVar == "site" // True if front_end , False if local development
-	cacheStorage  fiber.Storage
+	cacheStorage  = memory.New(memory.Config{
+		// gc can be added here.
+	})
 )
 
 func listRoutes(app *fiber.App) {
@@ -69,14 +69,10 @@ func main() {
 
 	// Create a new Fiber app with the HTML engine
 	app := fiber.New(fiber.Config{
-		Views: engine,
+		Views:       engine,
+		JSONEncoder: json.Marshal,
+		JSONDecoder: json.Unmarshal,
 	})
-
-	cacheStorage = memory.New(memory.Config{
-		// gc can be added here.
-	})
-
-	app.Post("/clear-cache", clearCacheHandler)
 
 	// Setup middleware for all Routers
 	middleware.Run(app)
@@ -85,7 +81,7 @@ func main() {
 	// Setup API's
 	api_routes := app.Group("/api")
 
-	api.CreateRouter(api_routes)
+	api.CreateRouter(api_routes, cacheStorage)
 
 	// Setup Static files
 	templates.CreateTemplates(app)
@@ -112,23 +108,4 @@ func RegisterStatic(app *fiber.App) {
 
 	middleware.RewriteEngine(app) // apply Rewrite engine to
 	app.Static("/", "../../site/", staticType)
-}
-
-func clearCacheHandler(c fiber.Ctx) error {
-	var payload model.AuthCachePayload
-	if err := json.Unmarshal(c.Body(), &payload); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Cannot parse JSON"})
-	}
-
-	if payload.CacheKey != os.Getenv("cacheKey") {
-		return util.InternalServerError(c)
-	}
-
-	if cacheStorage != nil {
-		if err := cacheStorage.Reset(); err != nil {
-			return c.Status(fiber.StatusInternalServerError).SendString("Failed to clear cache")
-		}
-		return c.SendString("Cache cleared successfully")
-	}
-	return c.Status(fiber.StatusInternalServerError).SendString("Cache storage is not initialized")
 }
