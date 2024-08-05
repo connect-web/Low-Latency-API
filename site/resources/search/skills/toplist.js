@@ -30,8 +30,8 @@ document.addEventListener('DOMContentLoaded', function() {
         skillsCell.className = 'font-normal px-3 pt-0 pb-3 border-b border-gray-200 dark:border-gray-800';
         const skillsContainer = document.createElement('div');
         skillsContainer.className = 'skills-container';
-        item.skills.forEach(skill => {
-            skillsContainer.innerHTML += `${getSkillImage(skill)}`;
+        item.Activities.forEach(activity => {
+            skillsContainer.innerHTML += `${getSkillImage(activity)}`;
         });
         skillsCell.appendChild(skillsContainer);
 
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Player count cell
         const countCell = document.createElement('td');
         countCell.className = 'font-normal px-3 pt-0 pb-3 border-b border-gray-200 dark:border-gray-800';
-        countCell.textContent = item.count;
+        countCell.textContent = item.lifetimeCount;
         row.appendChild(countCell);
 
         // View cell
@@ -51,8 +51,8 @@ document.addEventListener('DOMContentLoaded', function() {
         viewButton.addEventListener('click', () => {
             skillDetails = {
                 id: item.id,
-                skills: item.skills,
-                count: item.count,
+                skills: item.Activities,
+                count: item.lifetimeCount,
             }
 
             fetchPlayersData(item.id);
