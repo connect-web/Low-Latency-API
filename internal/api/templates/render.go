@@ -10,9 +10,12 @@ var (
 	TemplatePaths = map[string]string{
 		// Key=Route path
 		// Value=File path
-		"/home":             "home",
-		"/login":            "login",
-		"/register":         "register",
+		"/home":     "home",
+		"/":         "home",
+		"/login":    "login",
+		"/register": "register",
+		"/profile":  "profile",
+
 		"/search/skills":    "search/skills",
 		"/search/minigames": "search/minigames",
 		"/ml/skills":        "ml/skills",
@@ -22,7 +25,7 @@ var (
 		"script":  "https://*.hcaptcha.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net",
 		"style":   "https://*.hcaptcha.com https://fonts.googleapis.com https://cdn.jsdelivr.net",
 		"img":     "https://*.hcaptcha.com https://cdnjs.cloudflare.com",
-		"font":    "https://fonts.googleapis.com https://fonts.gstatic.com",
+		"font":    "https://fonts.googleapis.com https://fonts.gstatic.com  https://cdnjs.cloudflare.com",
 		"frame":   "https://hcaptcha.com https://*.hcaptcha.com",
 		"connect": "https://hcaptcha.com https://*.hcaptcha.com",
 	}
@@ -52,17 +55,14 @@ func renderWithNonce(filePath string) fiber.Handler {
 
 func NonceAndCSPMiddleware() fiber.Handler {
 	return func(c fiber.Ctx) error {
-		// Generate the nonce
-		fmt.Println("Creating nonce.")
 		nonce, err := util.GenerateNonce()
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).SendString("Internal Server Error")
 		}
-		fmt.Printf("Nonce set: '%s'\n", nonce)
+
 		c.Locals("nonce", nonce)
 
 		// Set the CSP headers
-		fmt.Println("Fetching nonce.")
 		c.Set("Content-Security-Policy", fmt.Sprintf(
 			"default-src 'self'; "+
 				"script-src 'self' 'nonce-%[1]s' %[2]s; "+
