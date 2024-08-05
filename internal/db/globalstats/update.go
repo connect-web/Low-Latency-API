@@ -1,7 +1,6 @@
 package globalstats
 
 import (
-	"fmt"
 	"github.com/connect-web/Low-Latency-API/internal/model"
 	"time"
 )
@@ -26,8 +25,8 @@ func UpdateGlobalStatistics() {
 func shouldUpdateGlobalStatistics() bool {
 	duration := time.Now().Sub(model.LowLatencyStatistics.Last_updated)
 	hoursSinceLastUpdate := duration.Hours()
-	fmt.Printf("Hours since last update: %.2f\n", hoursSinceLastUpdate)
+	//fmt.Printf("Hours since last update: %.2f\n", hoursSinceLastUpdate)
 
-	return 6 < hoursSinceLastUpdate
+	return 1 < hoursSinceLastUpdate
 	// pass
 }
