@@ -3,6 +3,8 @@ package middleware
 import (
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/compress"
+	"github.com/gofiber/fiber/v3/middleware/etag"
+	"github.com/gofiber/fiber/v3/middleware/idempotency"
 	"github.com/gofiber/fiber/v3/middleware/logger"
 )
 
@@ -11,11 +13,20 @@ func Run(app *fiber.App) {
 
 	// Logging middleware
 	app.Use(logger.New(logger.Config{}))
+	app.Use(idempotency.New())
+	app.Use(etag.New(etag.Config{
+		Weak: false,
+	}))
 
 	// Compression
 	app.Use(compress.New(compress.Config{
 		Level: compress.LevelBestSpeed, // or compress.LevelBestCompression
 	}))
+	/*
+		app.Use(encryptcookie.New(encryptcookie.Config{
+				Key: "secret-thirty-2-character-string", // todo - Setup Key with environment variable.
+			}))
+	*/
 
 	// Use Helmet middleware with custom CSP
 	/*
