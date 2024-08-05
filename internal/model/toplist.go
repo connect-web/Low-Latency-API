@@ -1,16 +1,25 @@
 package model
 
-type SkillToplist struct {
-	Id        int      `json:"id"`
-	Skills    []string `json:"skills"`
-	Count     int      `json:"count"`
-	PlayerIds []int    `json:"playerIds"`
+import "time"
+
+type Toplist struct {
+	Id          int       `json:"id"`
+	LastUpdated time.Time `json:"lastUpdated"`
+	Activities  []string  `json:"Activities"`
+
+	LifetimeCount int `json:"lifetimeCount"`
+	UnbannedCount int `json:"UnbannedCount"`
+	BannedCount   int `json:"BannedCount"`
+
+	UnbannedPlayerIds []int `json:"unbannedPlayerIds"`
+	BannedPlayerIds   []int `json:"bannedPlayerIds"`
 }
 
 type MinigameToplist struct {
-	Minigame string                 `json:"minigame"`
-	Count    int                    `json:"count"`
-	Metrics  MachineLearningMetrics `json:"Metrics"`
+	Minigame    string                 `json:"minigame"`
+	LastUpdated time.Time              `json:"lastUpdated"`
+	Count       int                    `json:"count"`
+	Metrics     MachineLearningMetrics `json:"Metrics"`
 }
 
 type MachineLearningMetrics struct {
