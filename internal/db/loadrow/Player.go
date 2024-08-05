@@ -36,10 +36,15 @@ func Player(rows *sql.Rows) ([]model.Player, error) {
 		entry.SkillGainsRatio = util.DecodeJSONToFloat64Map(skillGainsRatio)
 		entry.MinigameGains = util.DecodeJSONToFloat64Map(minigameGains)
 
-		entry.CombatLevel = 3
-		byteToInt, err := strconv.Atoi(string(combatLevel))
-		if err == nil {
-			entry.CombatLevel = byteToInt
+		if combatLevel == nil {
+			entry.CombatLevel = 3
+		} else {
+			byteToInt, err := strconv.Atoi(string(combatLevel))
+			if err == nil {
+				entry.CombatLevel = byteToInt
+			} else {
+				fmt.Printf("Failed to convert %s into int\n", string(combatLevel))
+			}
 		}
 
 		entry.TotalExperience = 0
@@ -48,7 +53,6 @@ func Player(rows *sql.Rows) ([]model.Player, error) {
 			entry.TotalExperience = byteToIntExp
 		}
 
-		entry.CombatLevel = 3
 		byteToIntTotalLvl, err := strconv.Atoi(string(TotalLevel))
 		if err == nil {
 			entry.TotalLevel = byteToIntTotalLvl
