@@ -9,6 +9,7 @@ import (
 	"github.com/connect-web/Low-Latency-API/internal/api/templates"
 	"github.com/connect-web/Low-Latency-API/internal/db"
 	"github.com/connect-web/Low-Latency-API/internal/db/globalStats"
+	cache "github.com/connect-web/low-latency-cache-controller/wrapper"
 	"github.com/connect-web/storageself/postgres"
 	json "github.com/goccy/go-json"
 	"github.com/gofiber/fiber/v3"
@@ -87,8 +88,14 @@ func main() {
 	fmt.Printf("Front end mode = %v\n", front_end)
 	listRoutes(app)
 	if front_end {
+		go cache.StartUp("https://low-latency.co.uk")
+		go cache.RefreshCacheHourly("https://low-latency.co.uk")
+
 		log.Fatal(app.Listen(":443", fiber.ListenConfig{CertFile: certDirectory + "fullchain.pem", CertKeyFile: certDirectory + "privkey.pem"}))
 	} else {
+		go cache.StartUp("http://127.0.0.1:4050")
+		go cache.RefreshCacheHourly("http://127.0.0.1:4050")
+
 		log.Fatal(app.Listen(":4050"))
 	}
 
