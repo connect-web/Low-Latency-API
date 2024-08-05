@@ -4,7 +4,10 @@ go 1.22.0
 
 require (
 	github.com/connect-web/storageself/postgres v0.0.0-20240713162408-899ae79cd9b2
+	github.com/goccy/go-json v0.10.3
 	github.com/gofiber/fiber/v3 v3.0.0-beta.2
+	github.com/gofiber/storage/memory v1.3.4
+	github.com/gofiber/template/html/v2 v2.1.2
 	github.com/gofiber/utils/v2 v2.0.0-beta.4
 	github.com/lib/pq v1.10.9
 	golang.org/x/crypto v0.24.0
@@ -12,9 +15,7 @@ require (
 )
 
 require (
-	github.com/gofiber/storage/memory v1.3.4 // indirect
 	github.com/gofiber/template v1.8.3 // indirect
-	github.com/gofiber/template/html/v2 v2.1.2 // indirect
 	github.com/gofiber/utils v1.1.0 // indirect
 )
 
