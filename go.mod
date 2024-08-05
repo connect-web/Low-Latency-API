@@ -3,6 +3,7 @@ module github.com/connect-web/Low-Latency-API
 go 1.22.0
 
 require (
+	github.com/connect-web/low-latency-cache-controller v0.0.0-20240805190746-5ec1e7cb621c
 	github.com/connect-web/storageself/postgres v0.0.0-20240713162408-899ae79cd9b2
 	github.com/goccy/go-json v0.10.3
 	github.com/gofiber/fiber/v3 v3.0.0-beta.2
@@ -17,6 +18,7 @@ require (
 require (
 	github.com/gofiber/template v1.8.3 // indirect
 	github.com/gofiber/utils v1.1.0 // indirect
+	github.com/montanaflynn/stats v0.7.1 // indirect
 )
 
 require (
