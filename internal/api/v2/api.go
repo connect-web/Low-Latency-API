@@ -1,6 +1,7 @@
 package v2
 
 import (
+	"fmt"
 	"github.com/connect-web/Low-Latency-API/internal/api/v2/global"
 	"github.com/connect-web/Low-Latency-API/internal/api/v2/ml"
 	"github.com/connect-web/Low-Latency-API/internal/api/v2/profile"
@@ -11,16 +12,20 @@ import (
 	"time"
 )
 
-func RegisterRouter(api fiber.Router) {
-	cacheStorage := memory.New()
+var cacheStorage = memory.New(memory.Config{
+	// gc can be added here.
+})
 
+func RegisterRouter(api fiber.Router) {
 	// Define custom cache middleware
 	customCacheMiddleware := cache.New(cache.Config{
-		Expiration: 24 * 7 * time.Hour,
+		Expiration: 90 * 24 * time.Hour, // 3 months cache duration.
 		Storage:    cacheStorage,
 		KeyGenerator: func(c fiber.Ctx) string {
 			// Use path and query params to generate the cache key
-			return c.Path() + "?" + c.OriginalURL()
+			key := c.OriginalURL() // c.Path() + "?" + c.OriginalURL()
+			fmt.Printf("Key=%s\n", key)
+			return key
 		},
 		Next: func(c fiber.Ctx) bool {
 			// Skip caching for the /user/profile route

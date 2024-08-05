@@ -13,7 +13,6 @@ import (
 	json "github.com/goccy/go-json"
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/session"
-	"github.com/gofiber/storage/memory"
 	"github.com/gofiber/template/html/v2"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"log"
@@ -25,9 +24,6 @@ var (
 	envVar        = os.Getenv("siteonline")
 	certDirectory = os.Getenv("certDir")
 	front_end     = envVar == "site" // True if front_end , False if local development
-	cacheStorage  = memory.New(memory.Config{
-		// gc can be added here.
-	})
 )
 
 func listRoutes(app *fiber.App) {
@@ -81,7 +77,7 @@ func main() {
 	// Setup API's
 	api_routes := app.Group("/api")
 
-	api.CreateRouter(api_routes, cacheStorage)
+	api.CreateRouter(api_routes)
 
 	// Setup Static files
 	templates.CreateTemplates(app)
