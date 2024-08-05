@@ -10,7 +10,7 @@ import (
 )
 
 var SKILL_TOPLIST_QUERY = `
-SELECT r.activity, count(distinct r.playerid), m.metrics
+SELECT r.activity, count(distinct r.playerid), m.metrics, max(r.Time)
 FROM ML.results r
 LEFT JOIN ml.metrics m on m.activity = r.activity
 WHERE r.activitytype = 'skills'
@@ -64,7 +64,7 @@ func QuerySkillToplist() ([]model.MinigameToplist, error) {
 	for rows.Next() {
 		row := model.MinigameToplist{}
 		var metrics []byte
-		if err := rows.Scan(&row.Minigame, &row.Count, &metrics); err == nil {
+		if err := rows.Scan(&row.Minigame, &row.Count, &metrics, &row.LastUpdated); err == nil {
 			metricErr := json.Unmarshal(metrics, &row.Metrics)
 			if metricErr != nil {
 				log.Printf("Failed to unmarshal metrics: %s\n", metricErr.Error())

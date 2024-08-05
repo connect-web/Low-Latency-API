@@ -11,9 +11,9 @@ import (
 
 var SKILLER_TOPLIST_QUERY = `
 select 
-    id, skills, amount
+    id, skills, unbannedcount, updated
 from grouped.skillers
-ORDER BY amount DESC;
+ORDER BY unbannedcount DESC;
 `
 
 var SKILLER_TOPLIST_USERS_QUERY = `
@@ -22,11 +22,10 @@ SELECT
     COALESCE(pls.combat_level, 3), COALESCE(pls.overall, 0), COALESCE(pls.total_level, 23),
     pl.skills_experience, pl.skills_ratio, pl.skills_levels, pl.minigames,
     pg.skills_experience, pg.skills_ratio, pg.minigames
-
 FROM player_gains pg
-LEFT JOIN PLAYERS P on p.id = pg.playerid
-LEFT JOIN player_live pl on pl.playerid = pg.playerid
-LEFT JOIN player_live_stats pls on pls.playerid = pg.playerid
+	LEFT JOIN PLAYERS P on p.id = pg.playerid
+	LEFT JOIN player_live pl on pl.playerid = pg.playerid
+	LEFT JOIN player_live_stats pls on pls.playerid = pg.playerid
 WHERE
     pg.playerid = ANY(
     select
@@ -36,8 +35,8 @@ WHERE
     );
 `
 
-func QuerySkillToplist() ([]model.SkillToplist, error) {
-	results := []model.SkillToplist{}
+func QuerySkillToplist() ([]model.Toplist, error) {
+	results := []model.Toplist{}
 	client := db.NewDBClient()
 	if connectErr := client.Connect(); connectErr != nil {
 		log.Println(connectErr.Error())
@@ -57,8 +56,8 @@ func QuerySkillToplist() ([]model.SkillToplist, error) {
 	defer rows.Close()
 
 	for rows.Next() {
-		entry := model.SkillToplist{}
-		scanErr := rows.Scan(&entry.Id, pq.Array(&entry.Skills), &entry.Count)
+		entry := model.Toplist{}
+		scanErr := rows.Scan(&entry.Id, pq.Array(&entry.Activities), &entry.LifetimeCount, &entry.LastUpdated)
 		if scanErr == nil {
 			results = append(results, entry)
 		}

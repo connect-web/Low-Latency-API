@@ -29,7 +29,6 @@ func GetSkillToplistUsers(c fiber.Ctx) error {
 	if err != nil {
 		return util.InternalServerError(c)
 	}
-	fmt.Println(skillId)
 	players, err := QuerySkillToplistUsers(skillId)
 	if err != nil {
 		fmt.Println(err.Error())

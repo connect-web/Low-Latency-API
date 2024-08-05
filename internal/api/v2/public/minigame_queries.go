@@ -11,9 +11,9 @@ import (
 
 var MINIGAME_TOPLIST_QUERY = `
 select 
-    id, activities, amount
+    id, activities, unbannedcount, updated
 from grouped.minigames
-ORDER BY amount DESC;
+ORDER BY unbannedcount DESC;
 `
 var MINIGAME_TOPLIST_USER_QUERY = `
 SELECT
@@ -35,8 +35,8 @@ WHERE
     );
 `
 
-func QueryMinigameToplist() ([]model.SkillToplist, error) {
-	results := []model.SkillToplist{}
+func QueryMinigameToplist() ([]model.Toplist, error) {
+	results := []model.Toplist{}
 	client := db.NewDBClient()
 	if connectErr := client.Connect(); connectErr != nil {
 		log.Println(connectErr.Error())
@@ -56,8 +56,8 @@ func QueryMinigameToplist() ([]model.SkillToplist, error) {
 	defer rows.Close()
 
 	for rows.Next() {
-		entry := model.SkillToplist{}
-		scanErr := rows.Scan(&entry.Id, pq.Array(&entry.Skills), &entry.Count)
+		entry := model.Toplist{}
+		scanErr := rows.Scan(&entry.Id, pq.Array(&entry.Activities), &entry.LifetimeCount, &entry.LastUpdated)
 		if scanErr == nil {
 			results = append(results, entry)
 		}
