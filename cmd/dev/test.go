@@ -1,10 +1,8 @@
 package main
 
-import (
-	"github.com/connect-web/Low-Latency-API/internal/db/globalStats"
-)
+import cache "github.com/connect-web/low-latency-cache-controller/wrapper"
 
 func main() {
-	globalStats.GetGlobalStats()
-
+	//globalstats.GetGlobalStats()
+	cache.StartUp("http://127.0.0.1:4050")
 }
